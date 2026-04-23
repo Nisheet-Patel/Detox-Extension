@@ -1,0 +1,23 @@
+{
+  "name": "detox-extension",
+  "version": "0.0.1",
+  "description": "",
+  "scripts": {
+    "build": "node build.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nisheet-Patel/Detox-Extension.git"
+  },
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Nisheet-Patel/Detox-Extension/issues"
+  },
+  "homepage": "https://github.com/Nisheet-Patel/Detox-Extension#readme",
+  "dependencies": {
+    "esbuild": "^0.28.0"
+  },
+  "devDependencies": {
+    "webextension-polyfill": "^0.12.0"
+  }
+}
