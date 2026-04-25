@@ -1,8 +1,22 @@
+// background.js
+
 import "./vendor/browser-polyfill.min.js";
 
-console.log("Background service worker loaded");
+import { initTabEvents } from "./events/tabEvents.js";
+import { initIdleEvents } from "./events/idleEvents.js";
+import { initWindowEvents } from "./events/windowEvents.js";
 
-browser.runtime.onInstalled.addListener(() => {
-  console.log("Hello World from background!");
+initTabEvents();
+initIdleEvents();
+initWindowEvents();
 
-});
+/**
+ * Midnight boundary handler
+ */
+setInterval(async () => {
+  const now = new Date();
+  if (now.getHours() === 0 && now.getMinutes() === 0) {
+    const { commitTime } = await import("./tracker/trackerService.js");
+    await commitTime();
+  }
+}, 60000);
