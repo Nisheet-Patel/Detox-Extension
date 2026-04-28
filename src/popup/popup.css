@@ -1,0 +1,90 @@
+body {
+  margin: 0;
+  padding: 12px;
+  width: 320px;
+  font-family: Arial, sans-serif;
+  background: #f9fafb;
+
+}
+
+html {
+  border-radius: 20px;
+}
+
+.container {
+  width: 100%;
+  padding-top: 10px;
+}
+
+
+/* Detox logo */
+.textLogo {
+  font-size: 1.5rem;
+}
+
+
+/* BAR */
+.bar {
+  display: flex;
+  height: 12px;
+  border-radius: 9999px;
+  overflow: hidden;
+  background: #e5e7eb;
+}
+
+/* SEGMENT */
+.segment {
+  height: 100%;
+}
+
+/* LEGEND */
+.legend {
+  margin-top: 10px;
+  max-height: 120px;
+  /* ~4 rows */
+  overflow-y: auto;
+}
+
+/* hide scrollbar */
+.legend::-webkit-scrollbar {
+  display: none;
+}
+
+.legend {
+  scrollbar-width: none;
+}
+
+/* ROW */
+.row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+/* LEFT */
+.left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* DOT */
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+
+
+
+/* Hide scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
