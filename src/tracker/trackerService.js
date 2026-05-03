@@ -1,36 +1,127 @@
 // tracker/trackerService.js
 
+import { getTodayKey } from "../utils/date.js";
+import {
+  addUsageSegments,
+  clearTrackingSession,
+  buildUsageWithSession,
+  loadTrackingSession,
+  readUsageForDay,
+  saveTrackingSession
+} from "./trackingStorage.js";
+import { splitDurationByDay } from "../utils/date.js";
 import { state } from "./state.js";
-import { addTime } from "../storage/storageService.js";
 
-/**
- * Commits current session time.
- */
-export async function commitTime() {
-  if (!state.domain || !state.startTime) return;
-
-  const duration = Date.now() - state.startTime;
-  if (duration <= 0) return;
-
-  await addTime(state.domain, duration);
-
-  state.startTime = null;
+function queueOperation(task) {
+  const operation = state.operationQueue.then(task, task);
+  state.operationQueue = operation.catch((error) => {
+    console.error("Tracking operation failed:", error);
+  });
+  return operation;
 }
 
-/**
- * Starts tracking a domain.
- */
-export function start(domain) {
-  state.domain = domain;
-  state.startTime = Date.now();
+async function ensureSessionLoaded() {
+  if (state.sessionLoaded) {
+    return state.session;
+  }
+
+  state.session = await loadTrackingSession();
+  state.sessionLoaded = true;
+  return state.session;
 }
 
-/**
- * Switches tracking to a new domain.
- */
-export async function switchTo(domain) {
-  if (domain === state.domain) return;
+async function persistSession(session) {
+  state.session = session;
+  state.sessionLoaded = true;
 
-  await commitTime();
-  start(domain);
+  if (session) {
+    await saveTrackingSession(session);
+    return;
+  }
+
+  await clearTrackingSession();
+}
+
+async function commitSession(endTime = Date.now()) {
+  const session = await ensureSessionLoaded();
+  if (!session?.domain || !Number.isFinite(session.startedAt) || endTime <= session.startedAt) {
+    return session;
+  }
+
+  const segments = splitDurationByDay(session.startedAt, endTime);
+  await addUsageSegments(session.domain, segments);
+
+  return {
+    domain: session.domain,
+    startedAt: endTime
+  };
+}
+
+export async function initializeTrackerSession() {
+  return queueOperation(async () => {
+    await ensureSessionLoaded();
+  });
+}
+
+export async function commitTime(endTime = Date.now()) {
+  return queueOperation(async () => {
+    const committedSession = await commitSession(endTime);
+    await persistSession(null);
+    return committedSession;
+  });
+}
+
+export async function stopTracking(endTime = Date.now()) {
+  return commitTime(endTime);
+}
+
+export async function trackDomain(domain, startedAt = Date.now()) {
+  return queueOperation(async () => {
+    await ensureSessionLoaded();
+
+    if (!domain) {
+      const committedSession = await commitSession(startedAt);
+      await persistSession(null);
+      return committedSession;
+    }
+
+    if (!Number.isFinite(startedAt)) {
+      startedAt = Date.now();
+    }
+
+    if (state.session && startedAt < state.session.startedAt) {
+      startedAt = state.session.startedAt;
+    }
+
+    if (!state.session) {
+      const nextSession = { domain, startedAt };
+      await persistSession(nextSession);
+      return nextSession;
+    }
+
+    if (state.session.domain === domain) {
+      return state.session;
+    }
+
+    await commitSession(startedAt);
+
+    const nextSession = { domain, startedAt };
+    await persistSession(nextSession);
+    return nextSession;
+  });
+}
+
+export async function getUsageSnapshot(now = Date.now()) {
+  return queueOperation(async () => {
+    const dayKey = getTodayKey(now);
+    const session = await ensureSessionLoaded();
+    const persistedUsage = await readUsageForDay(dayKey);
+
+    return {
+      dayKey,
+      persistedUsage,
+      session,
+      usage: buildUsageWithSession(persistedUsage, session, now)
+    };
+  });
 }

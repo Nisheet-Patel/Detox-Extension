@@ -1,5 +1,5 @@
-import { getTodayKey } from "../utils/date.js";
-
+import { TRACKING_SESSION_KEY, buildUsageWithSession } from "../../tracker/trackingStorage.js";
+import { getTodayKey } from "../../utils/date.js";
 
 // === FORMAT TIME ===
 function formatTime(seconds) {
@@ -13,6 +13,18 @@ function formatTime(seconds) {
   if (s > 0 || parts.length === 0) parts.push(`${s}s`);
 
   return parts.join(" ");
+}
+
+let latestSnapshot = null;
+let liveRefreshTimer = null;
+
+function normalizeUsageEntries(usage = {}) {
+  return Object.entries(usage)
+    .map(([name, value]) => ({
+      name,
+      value: Math.floor(value / 1000)
+    }))
+    .filter((item) => item.value > 0);
 }
 
 // === PROCESS DATA ===
@@ -32,12 +44,21 @@ function processData(data) {
 
 // === COMPONENT ===
 function createStackedBar({ element, data = [] }) {
-  if (!data.length) return;
+  element.innerHTML = "";
+
+  const totalEl = document.getElementById("totalTime");
+
+  if (!data.length) {
+    if (totalEl) {
+      totalEl.textContent = "0s";
+    }
+
+    return;
+  }
 
   const processed = processData(data);
   const total = processed.reduce((sum, i) => sum + i.value, 0);
 
-  const totalEl = document.getElementById("totalTime");
   if (totalEl) {
     totalEl.textContent = formatTime(total);
   }
@@ -51,8 +72,6 @@ function createStackedBar({ element, data = [] }) {
     "#818cf8",
     "#c084fc"
   ];
-
-  element.innerHTML = "";
 
   // BAR
   const bar = document.createElement("div");
@@ -106,46 +125,78 @@ function createStackedBar({ element, data = [] }) {
   element.appendChild(legend);
 }
 
+async function loadTrackingSnapshot() {
+  try {
+    return await browser.runtime.sendMessage({ type: "TRACKING_GET_SNAPSHOT" });
+  } catch (error) {
+    console.error("Failed to load tracking snapshot:", error);
+    return null;
+  }
+}
 
-async function getTodayList() {
-  const today = getTodayKey();
+function renderCurrentUsage() {
+  createStackedBar({
+    element: document.getElementById("chart"),
+    data: normalizeUsageEntries(
+      buildUsageWithSession(
+        latestSnapshot?.persistedUsage || {},
+        latestSnapshot?.session || null,
+        Date.now()
+      )
+    )
+  });
+}
 
-  // Fetch today's data from storage
-  const result = await browser.storage.local.get(today);
-  const data = result[today] || {};
+async function refreshTrackingView() {
+  const snapshot = await loadTrackingSnapshot();
+  if (!snapshot) {
+    return;
+  }
 
-  // Transform into list format
-  return Object.entries(data).map(([key, value]) => ({
-    name: key,
-    value: Number(value.toString().slice(0, -3)) || 0
-  }));
+  latestSnapshot = snapshot;
+  renderCurrentUsage();
+}
+
+function startLiveRefresh() {
+  if (liveRefreshTimer !== null) {
+    clearInterval(liveRefreshTimer);
+  }
+
+  liveRefreshTimer = window.setInterval(() => {
+    if (!latestSnapshot) {
+      return;
+    }
+
+    if (latestSnapshot.dayKey !== getTodayKey()) {
+      refreshTrackingView();
+      return;
+    }
+
+    renderCurrentUsage();
+  }, 1000);
+}
+
+function handleStorageChange(changes) {
+  if (changes[TRACKING_SESSION_KEY] || changes[getTodayKey()]) {
+    refreshTrackingView();
+  }
 }
 
 // === INIT ===
 async function init() {
-  const sampleData = await getTodayList();
-
-  console.log(sampleData)
-
-  createStackedBar({
-    element: document.getElementById("chart"),
-    data: sampleData
-  });
-
+  await refreshTrackingView();
+  startLiveRefresh();
+  browser.storage.onChanged.addListener(handleStorageChange);
 }
 
 document.addEventListener("DOMContentLoaded", init);
+window.addEventListener("beforeunload", () => {
+  if (liveRefreshTimer !== null) {
+    clearInterval(liveRefreshTimer);
+  }
 
-
-const sampleData = [
-  { name: "youtube.com", value: 3000 },
-  { name: "google.com", value: 2000 }
-];
-
-console.log(sampleData);
-
-
-
+  browser.storage.onChanged.removeListener(handleStorageChange);
+});
 
 const container = document.getElementById("scrollContainer");
 const leftBtn = document.getElementById("leftBtn");

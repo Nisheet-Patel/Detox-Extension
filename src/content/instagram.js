@@ -1,11 +1,13 @@
 // 1. Centralized Configuration State
-const extensionState = {
-    hideReels: true,
-    hideExplore: true,
+let extensionState = {
+    hideReels: false,
+    hideExplore: false,
 };
 
 // 2. The Master Render Function
 function applyInstagramFilters(state) {
+    console.log(state);
+
     let styleBlock = document.getElementById('ig-custom-filter-styles');
     if (!styleBlock) {
         styleBlock = document.createElement('style');
@@ -45,4 +47,11 @@ function applyInstagramFilters(state) {
 }
 
 // 4. Run it on load
-applyInstagramFilters(extensionState);
+(async () => {
+    const data = await browser.storage.local.get('contentFilters');
+
+    extensionState.hideReels = data.contentFilters.hideInstagramReels;
+    extensionState.hideExplore = data.contentFilters.hideInstagramExplore;
+
+    applyInstagramFilters(extensionState);
+})();

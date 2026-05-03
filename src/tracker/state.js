@@ -5,7 +5,10 @@
  * Kept isolated so it can be reused/tested easily.
  */
 export const state = {
-  domain: null,
-  startTime: null,
+  session: null,
+  sessionLoaded: false,
   isIdle: false,
+  activeTabId: null,
+  focusedWindowId: null,
+  operationQueue: Promise.resolve(),
 };

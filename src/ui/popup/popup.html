@@ -4,16 +4,16 @@
 <head>
   <meta charset="UTF-8" />
   <title>Detox</title>
-  <script src="./tailwind42.js"></script>
+  <script src="../tailwind42.js"></script>
   <link rel="stylesheet" href="popup.css" />
 </head>
 
-<body>
+<body class="m-0 p-3 w-[320px] font-sans bg-gray-50">
 
   <div class="flex items-center justify-between mb-3">
 
     <!-- Logo -->
-    <span class="textLogo font-semibold text-gray-800">Detox</span>
+    <span class="text-2xl font-semibold text-gray-800">Detox</span>
 
     <!-- Settings Button -->
     <button id="openSettings" class="p-1.5 rounded-md hover:bg-gray-100 transition" title="Settings">
@@ -72,16 +72,16 @@
     <div id="scrollContainer" class="flex gap-3 overflow-x-auto no-scrollbar pb-1">
 
       <!-- ICON ITEM -->
-      <a class="min-w-[56px] h-[56px] flex items-center justify-center bg-gray-100 rounded-lg" href="#">
-        <img src="icons/blockweb.svg" class="w-7 h-7">
+      <a class="min-w-[56px] h-[56px] flex items-center justify-center bg-gray-100 rounded-lg" href="/src/ui/block-website/block-website.html">
+        <img src="../icons/blockweb.svg" class="w-7 h-7">
       </a>
 
-      <a class="min-w-[56px] h-[56px] flex items-center justify-center bg-gray-100 rounded-lg" href="#">
-        <img src="icons/instagram.svg" class="w-7 h-7">
+      <a class="min-w-[56px] h-[56px] flex items-center justify-center bg-gray-100 rounded-lg" href="/src/ui/block-instagram/block-instagram.html">
+        <img src="../icons/instagram.svg" class="w-7 h-7">
       </a>
 
-      <a class="min-w-[56px] h-[56px] flex items-center justify-center bg-gray-100 rounded-lg" href="#">
-        <img src="icons/youtube.svg" class="w-7 h-7">
+      <a class="min-w-[56px] h-[56px] flex items-center justify-center bg-gray-100 rounded-lg" href="/src/ui/block-youtube/block-youtube.html">
+        <img src="../icons/youtube.svg" class="w-7 h-7">
       </a>
 
     </div>
@@ -117,7 +117,7 @@
 
   </div>
 
-  <script type="module" src="../vendor/browser-polyfill.min.js"></script>
+  <script type="module" src="../../vendor/browser-polyfill.min.js"></script>
   <script type="module" src="popup.js"></script>
 
 </body>

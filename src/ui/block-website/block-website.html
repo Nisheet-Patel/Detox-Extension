@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Detox</title>
+  <script src="../tailwind42.js"></script>
+  <link rel="stylesheet" href="popup.css" />
+  <style>
+    .transition-all {
+      transition: all 0.2s ease-in-out;
+    }
+
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+
+<body class="m-0 p-3 w-[320px] font-sans bg-gray-50">
+
+  <div class="relative flex items-center justify-between mb-4">
+
+    <a href="/src/ui/popup/popup.html"
+      class="p-1.5 bg-white shadow-sm border border-gray-200 rounded-md hover:bg-gray-50 text-gray-600 transition-colors focus:ring-2 focus:ring-blue-500 focus:outline-none z-10"
+      title="Go Back">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"
+        class="w-4 h-4">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+      </svg>
+    </a>
+
+    <span class="absolute inset-x-0 text-center text-lg font-bold text-gray-800 tracking-tight">Detox</span>
+
+    <a
+      class="p-1.5 bg-white shadow-sm border border-gray-200 rounded-md hover:bg-gray-50 text-gray-600 transition-colors focus:ring-2 focus:ring-blue-500 focus:outline-none z-10"
+      title="Settings">
+
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+        class="size-6 w-5 h-5 text-gray-600">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87q.11.06.22.127c.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a8 8 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a7 7 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a7 7 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a7 7 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124q.108-.066.22-.128c.332-.183.582-.495.644-.869z" />
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+      </svg>
+    </a>
+
+  </div>
+
+
+  <!-- <div id="cardsContainer" class="space-y-3"></div> -->
+  <div
+    class="bg-white shadow-xl rounded-lg overflow-hidden flex flex-col font-sans text-gray-800 border border-gray-200">
+
+    <header class="px-4 py-3 bg-white z-10 flex items-center justify-between">
+      <h1 class="font-semibold text-gray-800 tracking-tight text-sm">Blocked Websites</h1>
+    </header>
+
+    <div class="px-4 pb-1">
+      <div
+        class="flex shadow-sm rounded-md border border-gray-200 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 transition-all bg-white">
+        <input type="text" id="siteInput" placeholder="Enter website or search..."
+          class="flex-1 w-full text-sm px-3 py-2 bg-transparent outline-none text-gray-800 placeholder-gray-400">
+        <button id="blockBtn"
+          class="bg-gray-900 text-white px-3 py-2 text-sm font-medium hover:bg-gray-800 transition-colors rounded-r-md disabled:opacity-50 disabled:cursor-not-allowed">Block</button>
+      </div>
+
+      <div class="flex items-center gap-2 mt-2 h-6">
+        <button id="thisSiteBtn"
+          class="text-[11px] font-medium bg-blue-50 text-blue-600 hover:bg-blue-100 px-2.5 py-1 rounded-full transition-colors flex items-center gap-1">
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+          </svg>
+          This Site
+        </button>
+        <button id="clearBtn"
+          class="text-[11px] font-medium text-gray-500 hover:text-gray-800 px-2.5 py-1 rounded-full hover:bg-gray-100 transition-colors hidden">
+          Clear
+        </button>
+      </div>
+    </div>
+
+    <hr class="border-gray-100 mx-4 my-2">
+
+    <div class="flex-1 overflow-y-auto px-4 pb-4">
+      <div id="cardsContainer" class="space-y-3"></div>
+
+      <div id="emptyState" class="hidden flex-col items-center justify-center text-center pt-8 pb-4">
+        <p class="text-sm text-gray-500 font-medium mb-1">No matching sites.</p>
+        <p class="text-xs text-gray-400">Click "Block" to add it to your list.</p>
+      </div>
+    </div>
+  </div>
+
+
+
+  <script type="module" src="../../vendor/browser-polyfill.min.js"></script>
+  <script type="module" src="block-website.js"></script>
+
+</body>
+
+</html>
