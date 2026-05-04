@@ -8,6 +8,11 @@ import { StorageService } from "../src/storage/storageService.js";
 import { initTabEvents } from "./events/tabEvents.js";
 import { initIdleEvents } from "./events/idleEvents.js";
 import { initWindowEvents } from "./events/windowEvents.js";
+import {
+  enforceActiveTabTimeLimit,
+  enforceTimeLimitForTab,
+  startTimeLimitMonitor
+} from "./enforcement/timeLimitService.js";
 import { state } from "./tracker/state.js";
 import {
   getUsageSnapshot,
@@ -29,6 +34,8 @@ browser.runtime.onInstalled.addListener(async (details) => {
 initTabEvents();
 initIdleEvents();
 initWindowEvents();
+initTimeLimitEnforcement();
+startTimeLimitMonitor();
 syncTrackingState();
 
 async function syncTrackingState() {
@@ -58,6 +65,43 @@ async function syncTrackingState() {
 
   state.activeTabId = tab.id ?? null;
   await trackDomain(getDomain(tab.url));
+  await enforceTimeLimitForTab(tab);
+}
+
+function initTimeLimitEnforcement() {
+  browser.tabs.onActivated.addListener(async ({ tabId }) => {
+    const tab = await browser.tabs.get(tabId).catch(() => null);
+
+    if (tab) {
+      await enforceTimeLimitForTab(tab);
+    }
+  });
+
+  browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+    if (!tab?.active || (!changeInfo.url && changeInfo.status !== "complete")) {
+      return;
+    }
+
+    if (tabId !== state.activeTabId) {
+      return;
+    }
+
+    await enforceTimeLimitForTab(tab);
+  });
+
+  browser.windows.onFocusChanged.addListener(async (windowId) => {
+    if (windowId === browser.windows.WINDOW_ID_NONE) {
+      return;
+    }
+
+    await enforceActiveTabTimeLimit();
+  });
+
+  browser.idle.onStateChanged.addListener(async (idleState) => {
+    if (idleState === "active") {
+      await enforceActiveTabTimeLimit();
+    }
+  });
 }
 
 // 3. Use the StorageService in your message listeners

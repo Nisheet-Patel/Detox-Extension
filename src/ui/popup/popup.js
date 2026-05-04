@@ -1,5 +1,7 @@
 import { TRACKING_SESSION_KEY, buildUsageWithSession } from "../../tracker/trackingStorage.js";
+import { StorageService } from "../../storage/storageService.js";
 import { getTodayKey } from "../../utils/date.js";
+import { getDomain, normalizeDomain } from "../../utils/url.js";
 
 // === FORMAT TIME ===
 function formatTime(seconds) {
@@ -243,13 +245,20 @@ const clearBtn = document.getElementById("clearInput");
 
 // Block button click
 blockBtn.addEventListener("click", () => {
-  const value = input.value.trim();
-  if (!value) return;
+  void (async () => {
+    const value = normalizeDomain(input.value);
+    if (!value) {
+      return;
+    }
 
-  console.log("Blocked:", value);
+    await StorageService.upsertManagedWebsite(value, 0);
+    input.value = "";
+    blockBtn.textContent = "Blocked";
 
-  // TODO: save to chrome.storage if needed
-  input.value = "";
+    window.setTimeout(() => {
+      blockBtn.textContent = "Block";
+    }, 1200);
+  })();
 });
 
 // Clear input
@@ -260,15 +269,17 @@ clearBtn.addEventListener("click", () => {
 
 blockCurrent.addEventListener("click", async () => {
   try {
-    const [tab] = await chrome.tabs.query({
+    const [tab] = await browser.tabs.query({
       active: true,
       currentWindow: true
     });
 
-    if (!tab || !tab.url) return;
+    const domain = getDomain(tab?.url);
+    if (!domain) {
+      return;
+    }
 
-    const url = new URL(tab.url);
-    input.value = url.hostname;
+    input.value = domain;
 
   } catch (err) {
     console.error("Failed to get active tab:", err);

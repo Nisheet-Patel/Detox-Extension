@@ -11,4 +11,5 @@ export const state = {
   activeTabId: null,
   focusedWindowId: null,
   operationQueue: Promise.resolve(),
+  timeLimitMonitorId: null,
 };
