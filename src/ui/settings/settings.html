@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Detox - Settings</title>
+  <script src="../tailwind42.js"></script>
+  <link rel="stylesheet" href="../popup/popup.css" />
+  <link rel="icon" href="../../icons/icon.png" type="image/png" />
+  <style>
+    .transition-all {
+      transition: all 0.2s ease-in-out;
+    }
+
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #fef08a;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+
+<body class="m-0 p-3 w-[320px] font-sans bg-[#fefdf6] min-h-[500px] flex flex-col text-stone-800 selection:bg-yellow-200 select-none">
+
+  <!-- Header -->
+  <div class="relative flex items-center justify-between mb-3.5">
+    <a href="../popup/popup.html"
+      class="p-2 bg-white/80 border border-stone-200/60 rounded-xl hover:bg-yellow-100 hover:text-yellow-700 hover:border-yellow-300 transition duration-200 shadow-sm text-stone-600 focus:outline-none z-10"
+      title="Go Back">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"
+        class="w-4 h-4">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+      </svg>
+    </a>
+
+    <span class="absolute inset-x-0 text-center text-md font-extrabold text-stone-900 tracking-tight">Settings</span>
+
+    <div class="w-9 h-9"></div> <!-- Spacer to center title -->
+  </div>
+
+  <div class="h-px bg-stone-200/50 my-2"></div>
+
+  <!-- Scroll Container for content -->
+  <div class="flex-1 overflow-y-auto pr-1 no-scrollbar space-y-4">
+
+    <!-- Privacy Section -->
+    <div class="bg-white border border-stone-200/60 rounded-2xl p-3.5 shadow-sm">
+      <h3 class="text-[10px] font-bold text-stone-500 uppercase tracking-wider mb-1">Privacy</h3>
+      <p class="text-[11px] text-stone-400 mb-3">Your data never leaves your browser.</p>
+
+      <!-- Store Locally Toggle -->
+      <label class="flex items-center justify-between p-2.5 bg-stone-50 border border-stone-100 rounded-xl mb-3 cursor-pointer hover:bg-stone-100/50 transition">
+        <span class="text-[11px] font-bold text-stone-600">Store all data locally</span>
+        <input type="checkbox" checked disabled class="accent-yellow-500 h-4 w-4 rounded border-stone-300" />
+      </label>
+
+      <!-- Clear buttons stack -->
+      <div class="space-y-2">
+        <button id="clearStats" class="w-full text-left text-[11px] font-bold p-2.5 bg-white border border-stone-200 rounded-xl hover:bg-yellow-50 hover:border-yellow-300 hover:text-yellow-700 active:scale-95 transition-all duration-150">
+          Clear browsing statistics
+        </button>
+        <button id="clearChannels" class="w-full text-left text-[11px] font-bold p-2.5 bg-white border border-stone-200 rounded-xl hover:bg-yellow-50 hover:border-yellow-300 hover:text-yellow-700 active:scale-95 transition-all duration-150">
+          Clear blocked channels
+        </button>
+        <button id="clearBudgets" class="w-full text-left text-[11px] font-bold p-2.5 bg-white border border-stone-200 rounded-xl hover:bg-yellow-50 hover:border-yellow-300 hover:text-yellow-700 active:scale-95 transition-all duration-150">
+          Clear site budgets
+        </button>
+        <button id="resetAll" class="w-full text-left text-[11px] font-bold p-2.5 bg-white border border-red-200 text-red-600 rounded-xl hover:bg-red-50 hover:border-red-300 hover:text-red-700 active:scale-95 transition-all duration-150">
+          Reset all Detox data
+        </button>
+      </div>
+    </div>
+
+    <!-- Import / Export Section -->
+    <div class="bg-white border border-stone-200/60 rounded-2xl p-3.5 shadow-sm">
+      <h3 class="text-[10px] font-bold text-stone-500 uppercase tracking-wider mb-1">Import / Export</h3>
+      <p class="text-[11px] text-stone-400 mb-3">Backup or transfer your settings.</p>
+
+      <!-- History Choice -->
+      <div class="mb-3">
+        <label for="historyRange" class="block text-[10px] font-bold text-stone-500 uppercase mb-1">Screen Time History</label>
+        <select id="historyRange" class="w-full text-[11px] font-bold px-3 py-2 border border-stone-200 rounded-xl outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 bg-stone-50 transition">
+          <option value="30">Last 30 days</option>
+          <option value="60">Last 60 days</option>
+          <option value="all" selected>All time</option>
+        </select>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex gap-2">
+        <button id="exportBtn" class="flex-1 text-center text-[11px] font-bold py-2.5 bg-yellow-400 text-stone-900 border border-yellow-500/20 rounded-xl hover:bg-yellow-500 active:scale-95 transition-all duration-150 shadow-sm">
+          Export Data
+        </button>
+
+        <label class="flex-1 text-center text-[11px] font-bold py-2.5 bg-white text-stone-700 border border-stone-200 rounded-xl hover:bg-stone-50 active:scale-95 transition-all duration-150 shadow-sm cursor-pointer">
+          Import Data
+          <input type="file" id="importFile" accept=".json" class="hidden" />
+        </label>
+      </div>
+
+      <!-- Import Feedback -->
+      <div id="feedbackMsg" class="hidden text-center text-[10px] font-bold mt-2"></div>
+    </div>
+
+    <!-- About Section -->
+    <div class="bg-white border border-stone-200/60 rounded-2xl p-3.5 shadow-sm">
+      <h3 class="text-[10px] font-bold text-stone-500 uppercase tracking-wider mb-2">About</h3>
+      
+      <div class="flex items-center justify-between text-[11px] mb-2.5">
+        <span class="font-extrabold text-stone-800">Detox v1.0.0</span>
+        <span class="text-[10px] px-2 py-0.5 bg-stone-100 text-stone-500 font-bold rounded-md">Free & Open Source</span>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2 mt-3 text-[10px] font-bold text-stone-500">
+        <a href="https://github.com/Nisheet-Patel/Detox-Extension" target="_blank" class="flex items-center gap-1.5 p-2 bg-stone-50 border border-stone-100 rounded-lg hover:bg-yellow-50 hover:text-stone-900 hover:border-yellow-200 transition">
+          GitHub Repository
+        </a>
+        <a href="https://github.com/Nisheet-Patel/Detox-Extension#privacy" target="_blank" class="flex items-center gap-1.5 p-2 bg-stone-50 border border-stone-100 rounded-lg hover:bg-yellow-50 hover:text-stone-900 hover:border-yellow-200 transition">
+          Privacy Policy
+        </a>
+        <a href="https://github.com/Nisheet-Patel/Detox-Extension/issues" target="_blank" class="flex items-center gap-1.5 p-2 bg-stone-50 border border-stone-100 rounded-lg hover:bg-yellow-50 hover:text-stone-900 hover:border-yellow-200 transition">
+          Report a Bug
+        </a>
+        <a href="https://github.com/Nisheet-Patel/Detox-Extension/issues" target="_blank" class="flex items-center gap-1.5 p-2 bg-stone-50 border border-stone-100 rounded-lg hover:bg-yellow-50 hover:text-stone-900 hover:border-yellow-200 transition">
+          Request a Feature
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="module" src="../../vendor/browser-polyfill.min.js"></script>
+  <script type="module" src="settings.js"></script>
+
+</body>
+
+</html>

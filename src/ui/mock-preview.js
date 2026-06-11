@@ -89,6 +89,20 @@ if (typeof chrome === "undefined" || !chrome.runtime || !chrome.runtime.id) {
           console.log("[Mock Storage] Set:", obj);
           Object.assign(mockStorage, obj);
           return {};
+        },
+        remove: async (keys) => {
+          console.log("[Mock Storage] Remove:", keys);
+          if (typeof keys === "string") {
+            delete mockStorage[keys];
+          } else if (Array.isArray(keys)) {
+            keys.forEach(k => { delete mockStorage[k]; });
+          }
+          return {};
+        },
+        clear: async () => {
+          console.log("[Mock Storage] Clear all");
+          Object.keys(mockStorage).forEach(k => { delete mockStorage[k]; });
+          return {};
         }
       },
       onChanged: {

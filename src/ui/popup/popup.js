@@ -243,6 +243,13 @@ rightBtn.addEventListener("click", () => {
 container.addEventListener("scroll", updateButtons);
 window.addEventListener("load", updateButtons);
 
+const openSettingsBtn = document.getElementById("openSettings");
+if (openSettingsBtn) {
+  openSettingsBtn.addEventListener("click", () => {
+    window.location.href = "../settings/settings.html";
+  });
+}
+
 
 // BLOCK INPUT COMPONENT
 
