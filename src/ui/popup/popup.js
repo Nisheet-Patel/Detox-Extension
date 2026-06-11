@@ -47,6 +47,9 @@ function processData(data) {
 
 // === COMPONENT ===
 function createStackedBar({ element, data = [] }) {
+  const oldLegend = element.querySelector(".legend");
+  const scrollTop = oldLegend ? oldLegend.scrollTop : 0;
+
   element.innerHTML = "";
 
   const totalEl = document.getElementById("totalTime");
@@ -126,6 +129,10 @@ function createStackedBar({ element, data = [] }) {
 
   element.appendChild(bar);
   element.appendChild(legend);
+
+  if (scrollTop > 0) {
+    legend.scrollTop = scrollTop;
+  }
 }
 
 async function loadTrackingSnapshot() {
