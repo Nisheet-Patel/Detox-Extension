@@ -1,5 +1,6 @@
 var extensionState = {
   hideShorts: false,
+  hideRecommendations: false,
   blockedChannels: []
 };
 
@@ -61,6 +62,16 @@ function applyYouTubeFilters(state) {
         'ytd-mini-guide-entry-renderer:has(a[href^="/shorts"]),',
         'ytd-guide-entry-renderer:has(a[title="Shorts" i]),',
         "ytd-rich-shelf-renderer[is-shorts] {",
+        "  display: none !important;",
+        "}"
+      ].join("\n")
+    );
+  }
+
+  if (state.hideRecommendations) {
+    activeCSSRules.push(
+      [
+        "ytd-browse {",
         "  display: none !important;",
         "}"
       ].join("\n")
@@ -362,6 +373,7 @@ async function loadInitialState() {
   var filters = data.contentFilters || {};
 
   extensionState.hideShorts = Boolean(filters.hideYouTubeShorts);
+  extensionState.hideRecommendations = Boolean(filters.hideYouTubeRecommendations);
   extensionState.blockedChannels = readStoredChannels(data.blockedYouTubeChannels);
 
   applyState();
