@@ -3,33 +3,28 @@
   padding-top: 10px;
 }
 
-
-/* Detox logo */
-.textLogo {
-  font-size: 1.5rem;
-}
-
-
 /* BAR */
 .bar {
   display: flex;
-  height: 12px;
+  height: 10px;
   border-radius: 9999px;
   overflow: hidden;
-  background: #e5e7eb;
+  background: #f5f5f4; /* stone-100 */
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
 }
 
 /* SEGMENT */
 .segment {
   height: 100%;
+  transition: width 0.3s ease;
 }
 
 /* LEGEND */
 .legend {
-  margin-top: 10px;
+  margin-top: 12px;
   max-height: 120px;
-  /* ~4 rows */
   overflow-y: auto;
+  padding-right: 2px;
 }
 
 /* hide scrollbar */
@@ -45,15 +40,31 @@
 .row {
   display: flex;
   justify-content: space-between;
-  font-size: 12px;
-  margin-bottom: 6px;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 7px;
+  color: #44403c; /* stone-700 */
+  padding: 5px 8px;
+  background-color: #fafaf9; /* stone-50 */
+  border: 1px solid #f5f5f4; /* stone-100 */
+  border-radius: 8px;
+  transition: all 0.15s ease;
+}
+
+.row:hover {
+  background-color: #fef9c3; /* soft yellow-100 hover */
+  border-color: #fef08a; /* yellow-200 */
+  color: #1c1917; /* stone-900 */
+  transform: translateY(-0.5px);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
 }
 
 /* LEFT */
 .left {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 /* DOT */
@@ -61,10 +72,8 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
-
-
-
 
 /* Hide scrollbar */
 .no-scrollbar::-webkit-scrollbar {

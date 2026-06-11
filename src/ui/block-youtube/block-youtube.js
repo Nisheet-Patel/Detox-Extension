@@ -1,3 +1,4 @@
+import "../mock-preview.js";
 import "../../vendor/browser-polyfill.min.js";
 import { StorageService } from "../../storage/storageService.js";
 
@@ -35,7 +36,7 @@ function getChannelKey(channel) {
 }
 
 function getChannelLabel(channel) {
-  return channel.displayName || channel.handle || channel.channelId || "Unknown channel";
+  return channel.handle || channel.displayName || channel.channelId || "Unknown channel";
 }
 
 function highlightLabel(label, query) {
@@ -48,7 +49,7 @@ function highlightLabel(label, query) {
   return parts
     .map((part) =>
       normalizeValue(part) === normalizeValue(query)
-        ? `<span class="bg-yellow-200 text-gray-900">${escapeHtml(part)}</span>`
+        ? `<span class="bg-yellow-100 text-stone-900">${escapeHtml(part)}</span>`
         : escapeHtml(part)
     )
     .join("");
@@ -61,28 +62,36 @@ function buildChannelPayload(value) {
     return null;
   }
 
-  if (trimmedValue.startsWith("@")) {
+  const normalizedHandleInput = trimmedValue.replace(/^\/+/, "");
+  const plainHandleMatch = normalizedHandleInput.match(/^@?([a-zA-Z0-9._-]+)$/);
+
+  if (plainHandleMatch) {
     return {
-      handle: trimmedValue,
-      displayName: trimmedValue
+      handle: `@${plainHandleMatch[1].toLowerCase()}`,
+      displayName: `@${plainHandleMatch[1].toLowerCase()}`
     };
   }
 
   try {
-    const url = new URL(trimmedValue);
+    const url = new URL(
+      trimmedValue.startsWith("http://") || trimmedValue.startsWith("https://")
+        ? trimmedValue
+        : `https://youtube.com${trimmedValue.startsWith("/") ? "" : "/"}${trimmedValue}`
+    );
     const pathname = url.pathname.replace(/\/+$/, "");
     const segments = pathname.split("/").filter(Boolean);
 
     if (segments[0]?.startsWith("@")) {
+      const handle = `@${segments[0].slice(1).toLowerCase()}`;
       return {
-        handle: `@${segments[0].slice(1)}`,
-        displayName: segments[0]
+        handle,
+        displayName: handle
       };
     }
 
     if (segments[0] === "channel" && segments[1]) {
       return {
-        channelId: segments[1],
+        channelId: segments[1].toLowerCase(),
         displayName: segments[1]
       };
     }
@@ -138,7 +147,7 @@ function render() {
   filteredChannels.forEach((channel) => {
     const wrapper = document.createElement("div");
     wrapper.className =
-      "relative bg-white border border-gray-200 rounded-xl shadow-sm transition-all overflow-hidden";
+      "relative bg-white border border-stone-200/60 rounded-2xl shadow-sm hover:border-yellow-300 hover:shadow-md transition-all duration-200 overflow-hidden";
 
     const channelKey = getChannelKey(channel);
     wrapper.innerHTML = drafts[channelKey]
@@ -155,21 +164,21 @@ function generateViewState(channel) {
 
   return `
     <div class="group relative p-3 h-[52px]">
-      <div class="flex items-center gap-3 transition-all duration-200 group-hover:blur-[2px] group-hover:opacity-30 h-full w-full">
-        <div class="w-7 h-7 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-400">
+      <div class="flex items-center gap-3 transition-all duration-200 group-hover:blur-[1px] group-hover:opacity-30 h-full w-full">
+        <div class="w-7 h-7 rounded-full bg-stone-50 border border-stone-100 flex items-center justify-center text-stone-400">
           <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
         </div>
         <div class="flex-1 min-w-0">
-          <p class="text-sm font-medium text-gray-800 truncate leading-tight">${displayName}</p>
+          <p class="text-xs font-bold text-stone-800 truncate leading-tight">${displayName}</p>
         </div>
       </div>
 
       <div class="absolute inset-0 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none group-hover:pointer-events-auto">
-        <button data-action="edit" data-id="${escapeHtml(channelKey)}" class="p-2 bg-white text-gray-600 rounded-full shadow-md border border-gray-100 hover:text-blue-600 hover:-translate-y-0.5 transition-all">
-          <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+        <button data-action="edit" data-id="${escapeHtml(channelKey)}" class="p-2 bg-white text-stone-600 rounded-xl shadow-sm border border-stone-200 hover:bg-yellow-50 hover:text-yellow-700 hover:border-yellow-300 active:scale-95 transition-all">
+          <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
         </button>
-        <button data-action="delete" data-id="${escapeHtml(channelKey)}" class="p-2 bg-white text-gray-600 rounded-full shadow-md border border-gray-100 hover:text-red-500 hover:-translate-y-0.5 transition-all">
-          <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+        <button data-action="delete" data-id="${escapeHtml(channelKey)}" class="p-2 bg-white text-stone-600 rounded-xl shadow-sm border border-stone-200 hover:bg-red-50 hover:text-red-600 hover:border-red-200 active:scale-95 transition-all">
+          <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
         </button>
       </div>
     </div>
@@ -180,12 +189,12 @@ function generateEditState(channelKey) {
   const draft = drafts[channelKey];
 
   return `
-    <div class="p-3 bg-gray-50/50">
-      <input type="text" id="name-${escapeHtml(channelKey)}" value="${escapeHtml(draft.name)}" class="w-full text-sm font-medium border border-gray-200 rounded-md px-2.5 py-1.5 mb-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-shadow bg-white shadow-sm" placeholder="Channel Name">
+    <div class="p-3 bg-stone-50/50">
+      <input type="text" id="name-${escapeHtml(channelKey)}" value="${escapeHtml(draft.name)}" class="w-full text-xs font-semibold border border-stone-200 rounded-xl px-2.5 py-1.5 mb-3 focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition-shadow bg-white shadow-sm text-stone-800" placeholder="Channel Name">
 
-      <div class="flex gap-2">
-        <button data-action="cancel" data-id="${escapeHtml(channelKey)}" class="flex-1 bg-white border border-gray-200 text-gray-600 text-sm font-medium py-1.5 rounded-md hover:bg-gray-50 transition-colors shadow-sm">Cancel</button>
-        <button data-action="save" data-id="${escapeHtml(channelKey)}" class="flex-1 bg-blue-600 text-white text-sm font-medium py-1.5 rounded-md hover:bg-blue-700 transition-colors shadow-sm">Save</button>
+      <div class="flex gap-1.5">
+        <button data-action="cancel" data-id="${escapeHtml(channelKey)}" class="flex-1 bg-white border border-stone-200 text-stone-600 text-xs font-bold py-1.5 rounded-xl hover:bg-stone-50 active:scale-95 transition-all shadow-sm">Cancel</button>
+        <button data-action="save" data-id="${escapeHtml(channelKey)}" class="flex-1 bg-yellow-400 border border-yellow-500/20 text-stone-900 text-xs font-bold py-1.5 rounded-xl hover:bg-yellow-500 active:scale-95 transition-all shadow-sm">Save</button>
       </div>
     </div>
   `;
@@ -224,6 +233,7 @@ blockBtn.addEventListener("click", async () => {
     });
 
     if (!response?.success) {
+      blockBtn.textContent = "Added";
       return;
     }
 

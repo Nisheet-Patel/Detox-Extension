@@ -1,3 +1,4 @@
+import "../mock-preview.js";
 import { TRACKING_SESSION_KEY, buildUsageWithSession } from "../../tracker/trackingStorage.js";
 import { StorageService } from "../../storage/storageService.js";
 import { getTodayKey } from "../../utils/date.js";
@@ -66,13 +67,13 @@ function createStackedBar({ element, data = [] }) {
   }
 
   const colors = [
-    "#f87171",
-    "#fb923c",
-    "#facc15",
-    "#4ade80",
-    "#60a5fa",
-    "#818cf8",
-    "#c084fc"
+    "#facc15", // soft gold / yellow
+    "#f97316", // warm orange
+    "#3b82f6", // bright blue
+    "#10b981", // emerald green
+    "#8b5cf6", // violet purple
+    "#ec4899", // pink
+    "#14b8a6"  // teal
   ];
 
   // BAR

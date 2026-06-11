@@ -1,3 +1,4 @@
+import "../mock-preview.js";
 import { StorageService } from "../../storage/storageService.js";
 import { getDomain, normalizeDomain } from "../../utils/url.js";
 
@@ -119,7 +120,7 @@ function render() {
 
   filteredSites.forEach((site) => {
     const wrapper = document.createElement("div");
-    wrapper.className = "relative overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all";
+    wrapper.className = "relative overflow-hidden rounded-2xl border border-stone-200/60 bg-white shadow-sm hover:border-yellow-300 hover:shadow-md transition-all duration-200";
     wrapper.innerHTML = drafts[site.domain]
       ? generateEditState(site.domain)
       : generateViewState(site);
@@ -133,26 +134,26 @@ function highlightMatch(domain) {
   }
 
   const safeRegex = new RegExp(`(${escapeRegExp(searchQuery)})`, "gi");
-  return escapeHtml(domain).replace(safeRegex, '<span class="bg-yellow-200 text-gray-900">$1</span>');
+  return escapeHtml(domain).replace(safeRegex, '<span class="bg-yellow-100 text-stone-900">$1</span>');
 }
 
 function generateViewState(site) {
   return `
     <div class="group relative p-3 h-[60px]">
-      <div class="flex h-full w-full items-center gap-3 transition-all duration-200 group-hover:blur-[2px] group-hover:opacity-30">
-        <img src="${getFavicon(site.domain)}" class="h-6 w-6 rounded-sm bg-gray-100" alt="" />
+      <div class="flex h-full w-full items-center gap-3 transition-all duration-200 group-hover:blur-[1px] group-hover:opacity-30">
+        <img src="${getFavicon(site.domain)}" class="h-6 w-6 rounded-lg bg-stone-50 border border-stone-100" alt="" />
         <div class="min-w-0 flex-1">
-          <p class="truncate text-sm font-medium text-gray-800">${highlightMatch(site.domain)}</p>
-          <p class="mt-0.5 text-xs text-gray-500">${formatLimit(site.limitSeconds)}</p>
+          <p class="truncate text-xs font-bold text-stone-800 leading-tight">${highlightMatch(site.domain)}</p>
+          <p class="mt-0.5 text-[10px] font-semibold text-stone-500">${formatLimit(site.limitSeconds)}</p>
         </div>
       </div>
 
       <div class="pointer-events-none absolute inset-0 flex items-center justify-center gap-3 opacity-0 transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100">
-        <button data-action="edit" data-id="${site.domain}" class="rounded-full border border-gray-100 bg-white p-2 text-gray-600 shadow-md transition-all hover:-translate-y-0.5 hover:text-blue-600">
-          <svg class="pointer-events-none h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+        <button data-action="edit" data-id="${site.domain}" class="rounded-xl border border-stone-200 bg-white p-2 text-stone-600 shadow-sm transition-all hover:bg-yellow-50 hover:text-yellow-700 hover:border-yellow-300 active:scale-95">
+          <svg class="pointer-events-none h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
         </button>
-        <button data-action="delete" data-id="${site.domain}" class="rounded-full border border-gray-100 bg-white p-2 text-gray-600 shadow-md transition-all hover:-translate-y-0.5 hover:text-red-500">
-          <svg class="pointer-events-none h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+        <button data-action="delete" data-id="${site.domain}" class="rounded-xl border border-stone-200 bg-white p-2 text-stone-600 shadow-sm transition-all hover:bg-red-50 hover:text-red-600 hover:border-red-200 active:scale-95">
+          <svg class="pointer-events-none h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
         </button>
       </div>
     </div>
@@ -170,28 +171,28 @@ function generateEditState(id) {
 
   const chipHtml = chips.map((chip) => {
     const isActive = draft.limit === chip.val && draft.unit === chip.unit && !draft.isCustom;
-    const baseClass = "flex-1 rounded-md border py-1 text-xs font-medium transition-colors";
+    const baseClass = "flex-1 rounded-lg border py-1 text-[10px] font-bold transition-all duration-150 active:scale-95";
     const activeClass = isActive
-      ? "border-blue-200 bg-blue-50 text-blue-700"
-      : "border-gray-200 bg-gray-50 text-gray-600 hover:bg-gray-100";
+      ? "border-yellow-300 bg-yellow-100/60 text-yellow-800"
+      : "border-stone-200 bg-stone-50 text-stone-600 hover:bg-stone-100";
 
     return `<button data-action="chip" data-id="${id}" data-val="${chip.val}" data-unit="${chip.unit}" class="${baseClass} ${activeClass}">${chip.label}</button>`;
   }).join("");
 
   return `
-    <div class="bg-gray-50/50 p-3">
-      <input type="text" id="url-${id}" value="${escapeHtml(draft.domain)}" class="mb-4 w-full rounded-md border border-gray-200 bg-white px-2.5 py-1.5 text-sm font-medium shadow-sm transition-shadow focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="example.com">
-      <p class="mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-500">Time Limit</p>
+    <div class="bg-stone-50/50 p-3">
+      <input type="text" id="url-${id}" value="${escapeHtml(draft.domain)}" class="mb-3 w-full rounded-xl border border-stone-200 bg-white px-2.5 py-1.5 text-xs font-semibold shadow-sm focus:border-yellow-400 focus:outline-none focus:ring-1 focus:ring-yellow-400 text-stone-800" placeholder="example.com">
+      <p class="mb-1.5 text-[9px] font-bold uppercase tracking-wider text-stone-500">Time Limit</p>
       <div class="mb-3 flex gap-1.5">${chipHtml}</div>
-      <div class="mb-4 flex gap-2">
-        <input type="number" data-action="custom-input" data-id="${id}" id="custom-val-${id}" value="${draft.isCustom ? draft.limit : ""}" class="flex-1 rounded-md border border-gray-200 bg-white px-2.5 py-1.5 text-center text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="Custom time" min="1">
-        <button data-action="toggle-unit" data-id="${id}" class="w-12 rounded-md border border-gray-200 bg-white text-sm font-semibold text-gray-700 shadow-sm transition-colors hover:bg-gray-50">
+      <div class="mb-3 flex gap-1.5">
+        <input type="number" data-action="custom-input" data-id="${id}" id="custom-val-${id}" value="${draft.isCustom ? draft.limit : ""}" class="flex-1 rounded-xl border border-stone-200 bg-white px-2.5 py-1.5 text-center text-xs font-bold shadow-sm focus:border-yellow-400 focus:outline-none focus:ring-1 focus:ring-yellow-400 text-stone-800" placeholder="Custom time" min="1">
+        <button data-action="toggle-unit" data-id="${id}" class="w-12 rounded-xl border border-stone-200 bg-white text-xs font-bold text-stone-700 shadow-sm transition-colors hover:bg-stone-50 hover:text-stone-900 active:scale-95">
           ${draft.unit.toUpperCase()}
         </button>
       </div>
-      <div class="flex gap-2">
-        <button data-action="cancel" data-id="${id}" class="flex-1 rounded-md border border-gray-200 bg-white py-1.5 text-sm font-medium text-gray-600 shadow-sm transition-colors hover:bg-gray-50">Cancel</button>
-        <button data-action="save" data-id="${id}" class="flex-1 rounded-md bg-blue-600 py-1.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700">Save</button>
+      <div class="flex gap-1.5">
+        <button data-action="cancel" data-id="${id}" class="flex-1 rounded-xl border border-stone-200 bg-white py-1.5 text-xs font-bold text-stone-600 shadow-sm transition-all hover:bg-stone-50 active:scale-95">Cancel</button>
+        <button data-action="save" data-id="${id}" class="flex-1 rounded-xl bg-yellow-400 border border-yellow-500/20 py-1.5 text-xs font-bold text-stone-900 shadow-sm transition-all hover:bg-yellow-500 active:scale-95">Save</button>
       </div>
     </div>
   `;

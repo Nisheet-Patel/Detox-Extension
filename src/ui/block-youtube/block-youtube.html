@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <title>Detox</title>
     <script src="../tailwind42.js"></script>
-    <link rel="stylesheet" href="popup.css" />
+    <link class="toggle-checkbox-style" rel="stylesheet" href="popup.css" />
     <style>
         .transition-all {
             transition: all 0.2s ease-in-out;
@@ -16,33 +16,32 @@
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
+            background: #fef08a;
             border-radius: 4px;
         }
 
-        /* Update these lines in your <style> tag */
         .toggle-checkbox {
             right: 1.25rem;
-            /* Forces it to the left side initially (w-10 - w-5) */
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .toggle-checkbox:checked {
             right: 0;
-            border-color: #2563eb;
+            border-color: #eab308;
         }
 
         .toggle-checkbox:checked+.toggle-label {
-            background-color: #2563eb;
+            background-color: #facc15;
         }
     </style>
 </head>
 
-<body class="m-0 p-3 w-[320px] font-sans bg-gray-50 h-[500px] flex flex-col">
+<body class="m-0 p-3 w-[320px] font-sans bg-[#fefdf6] h-[500px] flex flex-col text-stone-800 selection:bg-yellow-200 select-none">
 
-    <div class="relative flex items-center justify-between mb-4">
+    <div class="relative flex items-center justify-between mb-3.5">
 
         <a href="/src/ui/popup/popup.html"
-            class="p-1.5 bg-white shadow-sm border border-gray-200 rounded-md hover:bg-gray-50 text-gray-600 transition-colors focus:ring-2 focus:ring-blue-500 focus:outline-none z-10"
+            class="p-2 bg-white/80 border border-stone-200/60 rounded-xl hover:bg-yellow-100 hover:text-yellow-700 hover:border-yellow-300 transition duration-200 shadow-sm text-stone-600 focus:outline-none z-10"
             title="Go Back">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
                 stroke="currentColor" class="w-4 h-4">
@@ -50,13 +49,13 @@
             </svg>
         </a>
 
-        <span class="absolute inset-x-0 text-center text-lg font-bold text-gray-800 tracking-tight">Detox</span>
+        <span class="absolute inset-x-0 text-center text-md font-extrabold text-stone-900 tracking-tight">Detox</span>
 
-        <a class="p-1.5 bg-white shadow-sm border border-gray-200 rounded-md hover:bg-gray-50 text-gray-600 transition-colors focus:ring-2 focus:ring-blue-500 focus:outline-none z-10"
+        <a class="p-2 bg-white/80 border border-stone-200/60 rounded-xl hover:bg-yellow-100 hover:text-yellow-700 hover:border-yellow-300 transition duration-200 shadow-sm text-stone-600 focus:outline-none z-10"
             title="Settings">
 
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="size-6 w-5 h-5 text-gray-600">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                stroke="currentColor" class="w-4.5 h-4.5">
                 <path stroke-linecap="round" stroke-linejoin="round"
                     d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87q.11.06.22.127c.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a8 8 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a7 7 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a7 7 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a7 7 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124q.108-.066.22-.128c.332-.183.582-.495.644-.869z" />
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
@@ -66,9 +65,9 @@
     </div>
 
     <div
-        class="bg-white shadow-md rounded-lg overflow-hidden flex flex-col flex-1 font-sans text-gray-800 border border-gray-200">
+        class="bg-white border border-stone-200/60 rounded-2xl overflow-hidden flex flex-col flex-1 font-sans text-stone-800 shadow-sm">
 
-        <div class="px-4 py-3 bg-gray-50/50 border-b border-gray-100 flex flex-col gap-3">
+        <div class="px-3.5 py-3 bg-stone-50 border-b border-stone-200/40 flex flex-col gap-3.5">
 
             <label class="flex items-center justify-between cursor-pointer group">
                 <div class="flex items-center gap-2">
@@ -77,61 +76,60 @@
                             d="M10 14.65v-5.3L15 12l-5 2.65zm7.77-4.27l-1.2-.5.82-.42c1.7-.87 2.37-2.96 1.5-4.66-.88-1.7-2.97-2.37-4.67-1.5L4.76 8.2c-1.3.67-2.12 2-2.12 3.46 0 1.1.58 2.13 1.5 2.65l1.2.5-.82.42c-1.7.87-2.37 2.96-1.5 4.66.88 1.7 2.97 2.37 4.67 1.5l9.46-4.9c1.3-.67 2.12-2 2.12-3.46 0-1.1-.58-2.13-1.5-2.65z">
                         </path>
                     </svg>
-                    <span class="text-sm font-medium text-gray-800 group-hover:text-black transition-colors">Hide
+                    <span class="text-xs font-bold text-stone-700 group-hover:text-stone-900 transition-colors">Hide
                         Shorts</span>
                 </div>
-                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                <div class="relative inline-block w-10 mr-1 align-middle select-none transition duration-200 ease-in">
                     <input type="checkbox" name="toggleShorts" id="toggleShorts"
-                        class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 border-gray-300 appearance-none cursor-pointer transition-transform duration-200 ease-in-out z-10"
+                        class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 border-stone-300 appearance-none cursor-pointer transition-transform duration-200 ease-in-out z-10"
                         checked />
                     <label for="toggleShorts"
-                        class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-300 cursor-pointer transition-colors duration-200 ease-in-out"></label>
+                        class="toggle-label block overflow-hidden h-5 rounded-full bg-stone-200 cursor-pointer transition-colors duration-200 ease-in-out"></label>
                 </div>
             </label>
 
             <label class="flex items-center justify-between cursor-pointer group">
                 <div class="flex items-center gap-2">
-                    <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    <svg class="w-4 h-4 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                             d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
                         </path>
                     </svg>
-                    <span class="text-sm font-medium text-gray-800 group-hover:text-black transition-colors">Hide
+                    <span class="text-xs font-bold text-stone-700 group-hover:text-stone-900 transition-colors">Hide
                         Recommendations</span>
                 </div>
-                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                <div class="relative inline-block w-10 mr-1 align-middle select-none transition duration-200 ease-in">
                     <input type="checkbox" name="toggleFeed" id="toggleFeed"
-                        class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 border-gray-300 appearance-none cursor-pointer transition-transform duration-200 ease-in-out z-10" />
+                        class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 border-stone-300 appearance-none cursor-pointer transition-transform duration-200 ease-in-out z-10" />
                     <label for="toggleFeed"
-                        class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-300 cursor-pointer transition-colors duration-200 ease-in-out"></label>
+                        class="toggle-label block overflow-hidden h-5 rounded-full bg-stone-200 cursor-pointer transition-colors duration-200 ease-in-out"></label>
                 </div>
             </label>
 
         </div>
 
-        <div class="px-4 pt-3 pb-1">
+        <div class="px-3 pt-3.5 pb-1">
             <div
-                class="flex shadow-sm rounded-md border border-gray-200 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 transition-all bg-white mb-3">
+                class="flex rounded-xl border border-stone-200/80 focus-within:border-yellow-400 focus-within:ring-1 focus-within:ring-yellow-400 transition-all bg-white overflow-hidden shadow-sm mb-3">
                 <input type="text" id="channelInput" placeholder="Enter channel name..."
-                    class="flex-1 w-full text-sm px-3 py-2 bg-transparent outline-none text-gray-800 placeholder-gray-400">
+                    class="flex-1 w-full text-xs px-3 py-2.5 bg-transparent outline-none text-stone-800 placeholder-stone-400">
                 <button id="blockBtn"
-                    class="bg-gray-900 text-white px-3 py-2 text-sm font-medium hover:bg-gray-800 transition-colors rounded-r-md disabled:opacity-50 disabled:cursor-not-allowed">Block</button>
+                    class="bg-yellow-400 text-stone-900 px-4 py-2.5 text-xs font-bold hover:bg-yellow-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed border-l border-yellow-500/20">Block</button>
             </div>
 
             <div class="flex items-center justify-between px-1">
-                <span id="channelCount" class="text-xs font-semibold text-gray-500 uppercase tracking-wider">0 Blocked
-                    Channels</span>
+                <span id="channelCount" class="text-[10px] font-bold text-stone-500 uppercase tracking-wider">0 Blocked Channels</span>
             </div>
         </div>
 
-        <hr class="border-gray-100 mx-4 my-2">
+        <hr class="border-stone-100 mx-3.5 my-2">
 
-        <div class="flex-1 overflow-y-auto px-4 pb-4">
-            <div id="cardsContainer" class="space-y-3"></div>
+        <div class="flex-1 overflow-y-auto px-3.5 pb-3">
+            <div id="cardsContainer" class="space-y-2"></div>
 
             <div id="emptyState" class="hidden flex-col items-center justify-center text-center pt-6 pb-4">
-                <p class="text-sm text-gray-500 font-medium mb-1">No channels blocked.</p>
-                <p class="text-xs text-gray-400">Type a name above to block it.</p>
+                <p class="text-xs text-stone-500 font-bold mb-1">No channels blocked.</p>
+                <p class="text-[10px] text-stone-400">Type a name above to block it.</p>
             </div>
         </div>
     </div>

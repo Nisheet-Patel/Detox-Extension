@@ -147,9 +147,9 @@ browser.runtime.onMessage.addListener(async (message, sender) => {
   }
 
   if (message.type === 'YOUTUBE_ADD_BLOCKED_CHANNEL') {
-    await StorageService.addBlockedYouTubeChannel(message.payload);
+    const added = await StorageService.addBlockedYouTubeChannel(message.payload);
 
-    return { success: true };
+    return { success: added };
   }
 
   if (message.type === 'YOUTUBE_REMOVE_BLOCKED_CHANNEL') {
@@ -165,6 +165,30 @@ browser.runtime.onMessage.addListener(async (message, sender) => {
     );
 
     return { success: updated };
+  }
+
+  if (message.type === "OPEN_INTERNAL_PAGE") {
+    const tabId = sender?.tab?.id;
+
+    if (!tabId) {
+      return { success: false };
+    }
+
+    const internalPageUrl = new URL(
+      browser.runtime.getURL(message.payload?.path || "src/ui/blocked-content/blocked-content.html")
+    );
+
+    const query = message.payload?.query || {};
+    for (const [key, value] of Object.entries(query)) {
+      if (value === undefined || value === null || value === "") {
+        continue;
+      }
+
+      internalPageUrl.searchParams.set(key, String(value));
+    }
+
+    await browser.tabs.update(tabId, { url: internalPageUrl.toString() });
+    return { success: true };
   }
 
 });

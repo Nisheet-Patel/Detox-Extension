@@ -54,6 +54,45 @@ function normalizeYouTubeValue(value) {
   return typeof value === "string" ? value.trim().toLowerCase() : "";
 }
 
+function normalizeYouTubeHandle(value) {
+  if (typeof value !== "string") {
+    return "";
+  }
+
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return "";
+  }
+
+  const withoutLeadingSlash = trimmed.replace(/^\/+/, "");
+  const normalized = normalizeYouTubeValue(withoutLeadingSlash);
+
+  if (!normalized) {
+    return "";
+  }
+
+  return normalized.startsWith("@") ? normalized : `@${normalized}`;
+}
+
+function normalizeYouTubeChannelId(value) {
+  return normalizeYouTubeValue(value);
+}
+
+function normalizeBlockedYouTubeChannel(channel = {}) {
+  const handle = normalizeYouTubeHandle(channel.handle);
+  const channelId = normalizeYouTubeChannelId(channel.channelId);
+  const displayName = channel.displayName
+    ? channel.displayName.trim()
+    : (handle || channel.channelId || "");
+
+  return {
+    ...channel,
+    handle,
+    channelId,
+    displayName
+  };
+}
+
 function normalizeLimitSeconds(limitSeconds) {
   const normalized = Number(limitSeconds);
 
@@ -161,23 +200,33 @@ export class StorageService {
 
   static async getBlockedYouTubeChannels() {
     const data = await storage.get('blockedYouTubeChannels');
-    return data.blockedYouTubeChannels || [];
+    return (data.blockedYouTubeChannels || [])
+      .map((channel) => normalizeBlockedYouTubeChannel(channel))
+      .filter((channel) => channel.handle || channel.channelId || channel.displayName);
   }
 
   static async addBlockedYouTubeChannel({ handle, channelId, displayName }) {
+    const normalizedChannel = normalizeBlockedYouTubeChannel({ handle, channelId, displayName });
     const channels = await this.getBlockedYouTubeChannels();
     
     // Check for duplicates by handle OR channelId (if they exist)
     const exists = channels.find(c => 
-      (handle && normalizeYouTubeValue(c.handle) === normalizeYouTubeValue(handle)) || 
-      (channelId && c.channelId === channelId) ||
-      (displayName && normalizeYouTubeValue(c.displayName) === normalizeYouTubeValue(displayName)) // Fallback
+      (normalizedChannel.handle && normalizeYouTubeHandle(c.handle) === normalizedChannel.handle) || 
+      (normalizedChannel.channelId && normalizeYouTubeChannelId(c.channelId) === normalizedChannel.channelId) ||
+      (normalizedChannel.displayName &&
+        normalizeYouTubeValue(c.displayName) === normalizeYouTubeValue(normalizedChannel.displayName))
     );
 
     if (!exists) {
-      channels.push({ handle, channelId, displayName, addedAt: new Date().toISOString() });
+      channels.push({
+        ...normalizedChannel,
+        addedAt: new Date().toISOString()
+      });
       await storage.set({ blockedYouTubeChannels: channels });
+      return true;
     }
+
+    return false;
   }
 
   static async removeBlockedYouTubeChannel(identifier) {
@@ -195,8 +244,11 @@ export class StorageService {
     }
 
     const updatedChannel = {
-      ...channels[index],
-      ...updates
+      ...normalizeBlockedYouTubeChannel({
+        ...channels[index],
+        ...updates
+      }),
+      addedAt: channels[index].addedAt
     };
 
     const hasDuplicate = channels.some((channel, channelIndex) => {
@@ -206,8 +258,9 @@ export class StorageService {
 
       return (
         (updatedChannel.handle &&
-          normalizeYouTubeValue(channel.handle) === normalizeYouTubeValue(updatedChannel.handle)) ||
-        (updatedChannel.channelId && channel.channelId === updatedChannel.channelId) ||
+          normalizeYouTubeHandle(channel.handle) === updatedChannel.handle) ||
+        (updatedChannel.channelId &&
+          normalizeYouTubeChannelId(channel.channelId) === updatedChannel.channelId) ||
         (updatedChannel.displayName &&
           normalizeYouTubeValue(channel.displayName) === normalizeYouTubeValue(updatedChannel.displayName))
       );

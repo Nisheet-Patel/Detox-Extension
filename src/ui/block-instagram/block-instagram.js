@@ -1,3 +1,4 @@
+import "../mock-preview.js";
 import "../../vendor/browser-polyfill.min.js";
 import { StorageService } from "../../storage/storageService.js";
 

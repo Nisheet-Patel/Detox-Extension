@@ -1,0 +1,32 @@
+body {
+    margin: 0;
+    padding: 12px;
+    width: 320px;
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    background-color: #fefdf6; /* Soft bright cream-yellow tint */
+    color: #1c1917; /* Warm dark gray */
+}
+
+html {
+    border-radius: 16px;
+    background-color: #fefdf6;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #fef08a; /* yellow-200 */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #fde047; /* yellow-300 */
+}
