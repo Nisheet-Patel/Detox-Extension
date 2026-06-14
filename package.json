@@ -1,6 +1,6 @@
 {
   "name": "detox-extension",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Filter distractions, not the web. Block channels, hide Shorts/Reels, track screen time, and control your browsing with daily site budgets - all local and open source.",
   "author": "Nisheet Patel",
   "license": "Apache-2.0",
