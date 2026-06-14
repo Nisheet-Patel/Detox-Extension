@@ -17,8 +17,6 @@ Detox is a digital wellbeing extension that allows users to surgically block and
 #### API Permissions
 *   **`activeTab`**
     *   **Justification:** Allows the extension to temporarily obtain the current active tab's domain when the user opens the extension popup and clicks "Use Current Tab" to easily add that website to their blocklist or time budget settings.
-*   **`scripting`**
-    *   **Justification:** Required to inject styling rules (CSS) directly into web pages (like YouTube and Instagram) to dynamically hide distracting elements (such as recommendation sidebars, Shorts, and Reels) based on the user's selected preferences.
 *   **`storage`**
     *   **Justification:** Required to save the user's custom settings, blocklists, daily time budgets, and local screen time history directly on the user's local machine via `chrome.storage.local`.
 *   **`tabs`**
@@ -71,7 +69,6 @@ All data used by the extension is stored strictly on your local device:
 ### 3. Permissions and Host Matches Used
 To function correctly, Detox requests the following browser permissions and host match access:
 *   **`storage` (API):** Used to save your settings, preferences, blocklists, and usage logs locally.
-*   **`scripting` (API):** Used to inject local CSS rules to hide distracting feeds, Shorts, or Reels on target websites.
 *   **`tabs` & `activeTab` (API):** Used to detect the active website domain to accurately calculate time limits and perform block redirects.
 *   **`idle` (API):** Used to detect when you walk away from your computer so time tracking pauses automatically.
 *   **`*://www.youtube.com/*` (Host Match):** Used to apply blocklists to channels, redirect blocked video pages, and hide Shorts/recommendations.

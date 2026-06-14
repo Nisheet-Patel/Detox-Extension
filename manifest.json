@@ -42,7 +42,6 @@
   },
   "permissions": [
     "activeTab",
-    "scripting",
     "storage",
     "tabs",
     "idle"
