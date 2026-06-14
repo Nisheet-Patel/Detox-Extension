@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Detox",
-  "version": "0.0.2",
-  "description": "",
+  "version": "0.1.0",
+  "description": "Filter distractions. Block channels, hide Shorts/Reels, track screen time, and set daily budgets. Local and open source.",
   "background": {
     "service_worker": "/src/background.js",
     "type": "module"
