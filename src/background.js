@@ -9,9 +9,8 @@ import { initTabEvents } from "./events/tabEvents.js";
 import { initIdleEvents } from "./events/idleEvents.js";
 import { initWindowEvents } from "./events/windowEvents.js";
 import {
-  enforceActiveTabTimeLimit,
   enforceTimeLimitForTab,
-  startTimeLimitMonitor
+  initTimeLimitService
 } from "./enforcement/timeLimitService.js";
 import { state } from "./tracker/state.js";
 import {
@@ -30,83 +29,147 @@ browser.runtime.onInstalled.addListener(async (details) => {
   }
 });
 
-// Initialize your tracking events
-initTabEvents();
-initIdleEvents();
-initWindowEvents();
-initTimeLimitEnforcement();
-startTimeLimitMonitor();
-syncTrackingState();
+// Queued synchronization mechanism to prevent race conditions and excessive I/O
+let isSyncing = false;
+let hasPendingSync = false;
+
+function triggerSync() {
+  if (isSyncing) {
+    hasPendingSync = true;
+    return;
+  }
+
+  isSyncing = true;
+  hasPendingSync = false;
+
+  void (async () => {
+    try {
+      await syncTrackingState();
+    } catch (error) {
+      console.error("Error during syncTrackingState:", error);
+    } finally {
+      isSyncing = false;
+      if (hasPendingSync) {
+        // Yield to event loop to avoid call stack overhead
+        setTimeout(() => triggerSync(), 0);
+      }
+    }
+  })();
+}
+
+// authoritatively query and update memory cache of browser state
+async function updateCachedState() {
+  const idleState = await browser.idle.queryState(15).catch(() => "active");
+  state.isIdle = (idleState === "locked" || idleState === "idle");
+
+  const window = await browser.windows.getLastFocused().catch(() => null);
+  if (!window || !window.focused || window.state === "minimized") {
+    state.focusedWindowId = null;
+    state.isWindowFocused = false;
+    state.activeTabId = null;
+    state.activeTabUrl = null;
+    state.activeTabHidden = false;
+    return;
+  }
+
+  state.focusedWindowId = window.id;
+  state.isWindowFocused = true;
+
+  const [tab] = await browser.tabs.query({ active: true, windowId: window.id }).catch(() => []);
+  if (!tab) {
+    state.activeTabId = null;
+    state.activeTabUrl = null;
+    state.activeTabHidden = false;
+    return;
+  }
+
+  state.activeTabId = tab.id;
+  state.activeTabUrl = tab.url;
+  state.activeTabHidden = tab.hidden ?? false;
+}
+
+let lastSyncState = {
+  isIdle: undefined,
+  isWindowFocused: undefined,
+  activeTabId: undefined,
+  activeTabDomain: undefined,
+  activeTabHidden: undefined
+};
 
 async function syncTrackingState() {
   await initializeTrackerSession();
 
-  const idleState = await browser.idle.queryState(15);
-  state.isIdle = idleState === "locked";
+  const domain = getDomain(state.activeTabUrl);
+
+  // If nothing changed since last sync, skip to avoid duplicate work and I/O
+  if (
+    state.isIdle === lastSyncState.isIdle &&
+    state.isWindowFocused === lastSyncState.isWindowFocused &&
+    state.activeTabId === lastSyncState.activeTabId &&
+    domain === lastSyncState.activeTabDomain &&
+    state.activeTabHidden === lastSyncState.activeTabHidden
+  ) {
+    return;
+  }
+
+  // Update last sync state cache
+  lastSyncState = {
+    isIdle: state.isIdle,
+    isWindowFocused: state.isWindowFocused,
+    activeTabId: state.activeTabId,
+    activeTabDomain: domain,
+    activeTabHidden: state.activeTabHidden
+  };
 
   if (state.isIdle) {
     await stopTracking();
     return;
   }
 
-  const window = await browser.windows.getLastFocused();
-  if (!window?.focused) {
+  if (!state.isWindowFocused || state.focusedWindowId === null) {
     await stopTracking();
     return;
   }
 
-  state.focusedWindowId = window.id ?? null;
-
-  const [tab] = await browser.tabs.query({ active: true, windowId: window.id });
-  if (!tab) {
+  if (state.activeTabId === null || state.activeTabHidden) {
     await stopTracking();
     return;
   }
 
-  state.activeTabId = tab.id ?? null;
-  await trackDomain(getDomain(tab.url));
-  await enforceTimeLimitForTab(tab);
+  if (!domain) {
+    await stopTracking();
+    return;
+  }
+
+  // Avoid duplicate calls to trackDomain when already tracking the same domain
+  if (!state.session || state.session.domain !== domain) {
+    await trackDomain(domain);
+  }
+
+  const activeTab = {
+    id: state.activeTabId,
+    url: state.activeTabUrl,
+    active: true
+  };
+  await enforceTimeLimitForTab(activeTab);
 }
 
-function initTimeLimitEnforcement() {
-  browser.tabs.onActivated.addListener(async ({ tabId }) => {
-    const tab = await browser.tabs.get(tabId).catch(() => null);
+// Initialize your tracking events
+initTabEvents(triggerSync);
+initIdleEvents(triggerSync);
+initWindowEvents(triggerSync);
 
-    if (tab) {
-      await enforceTimeLimitForTab(tab);
-    }
-  });
-
-  browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-    if (!tab?.active || (!changeInfo.url && changeInfo.status !== "complete")) {
-      return;
-    }
-
-    if (tabId !== state.activeTabId) {
-      return;
-    }
-
-    await enforceTimeLimitForTab(tab);
-  });
-
-  browser.windows.onFocusChanged.addListener(async (windowId) => {
-    if (windowId === browser.windows.WINDOW_ID_NONE) {
-      return;
-    }
-
-    await enforceActiveTabTimeLimit();
-  });
-
-  browser.idle.onStateChanged.addListener(async (idleState) => {
-    if (idleState === "active") {
-      await enforceActiveTabTimeLimit();
-    }
-  });
-}
+// Perform initial startup sync
+void (async () => {
+  await updateCachedState();
+  await initTimeLimitService();
+  await syncTrackingState();
+})();
 
 // 3. Use the StorageService in your message listeners
 browser.runtime.onMessage.addListener(async (message, sender) => {
   if (message?.type === "TRACKING_GET_SNAPSHOT") {
+    await updateCachedState();
     await syncTrackingState();
     return await getUsageSnapshot();
   }

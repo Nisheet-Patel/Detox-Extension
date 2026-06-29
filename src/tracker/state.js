@@ -9,7 +9,11 @@ export const state = {
   sessionLoaded: false,
   isIdle: false,
   activeTabId: null,
+  activeTabUrl: null,
+  activeTabHidden: false,
   focusedWindowId: null,
+  isWindowFocused: false,
+  stateVersion: 0,
   operationQueue: Promise.resolve(),
   timeLimitMonitorId: null,
 };

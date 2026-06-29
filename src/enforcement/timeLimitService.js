@@ -8,8 +8,21 @@ import {
   normalizeDomain
 } from "../utils/url.js";
 
-const CHECK_INTERVAL_MS = 1000;
 const LIMIT_REACHED_PAGE_PATH = "src/ui/limit-reached/limit-reached.html";
+
+// Memory cache for managed websites (domains and budgets)
+let cachedManagedWebsites = [];
+
+export async function loadCachedManagedWebsites() {
+  cachedManagedWebsites = await StorageService.getManagedWebsites().catch(() => []);
+}
+
+// Keep the local memory rules cache in sync whenever storage changes
+browser.storage.onChanged.addListener((changes) => {
+  if (changes.blockedDomains || changes.dailyBudgets) {
+    void loadCachedManagedWebsites();
+  }
+});
 
 function getLimitReachedPageUrl(params) {
   const url = new URL(browser.runtime.getURL(LIMIT_REACHED_PAGE_PATH));
@@ -25,26 +38,8 @@ function getLimitReachedPageUrl(params) {
   return url.toString();
 }
 
-async function getFocusedActiveTab() {
-  if (state.activeTabId !== null) {
-    const activeTab = await browser.tabs.get(state.activeTabId).catch(() => null);
-
-    if (activeTab?.active) {
-      return activeTab;
-    }
-  }
-
-  const query = state.focusedWindowId === null
-    ? { active: true, lastFocusedWindow: true }
-    : { active: true, windowId: state.focusedWindowId };
-  const [tab] = await browser.tabs.query(query);
-
-  return tab ?? null;
-}
-
-async function getMatchingWebsiteRule(hostname) {
-  const managedWebsites = await StorageService.getManagedWebsites();
-  return findBestMatchingEntry(hostname, managedWebsites);
+function getMatchingWebsiteRule(hostname) {
+  return findBestMatchingEntry(hostname, cachedManagedWebsites);
 }
 
 async function redirectTabToLimitPage(tabId, data) {
@@ -68,7 +63,7 @@ export async function enforceTimeLimitForTab(tab) {
     return false;
   }
 
-  const matchedRule = await getMatchingWebsiteRule(hostname);
+  const matchedRule = getMatchingWebsiteRule(hostname);
   if (!matchedRule) {
     return false;
   }
@@ -103,15 +98,15 @@ export async function enforceTimeLimitForTab(tab) {
 }
 
 export async function enforceActiveTabTimeLimit() {
-  if (state.isIdle) {
+  if (state.isIdle || !state.isWindowFocused || state.activeTabId === null || state.activeTabHidden) {
     return false;
   }
 
-  const activeTab = await getFocusedActiveTab();
-
-  if (!activeTab?.active) {
-    return false;
-  }
+  const activeTab = {
+    id: state.activeTabId,
+    url: state.activeTabUrl,
+    active: true
+  };
 
   return enforceTimeLimitForTab(activeTab);
 }
@@ -123,5 +118,10 @@ export function startTimeLimitMonitor() {
 
   state.timeLimitMonitorId = setInterval(() => {
     void enforceActiveTabTimeLimit();
-  }, CHECK_INTERVAL_MS);
+  }, 5000); // 5-second interval for time-limit enforcement to optimize performance
+}
+
+export async function initTimeLimitService() {
+  await loadCachedManagedWebsites();
+  startTimeLimitMonitor();
 }
