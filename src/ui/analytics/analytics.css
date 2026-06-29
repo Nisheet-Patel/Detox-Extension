@@ -24,3 +24,13 @@
 .weekly-bar.active {
   background-color: #facc15; /* yellow-400 */
 }
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #fef08a;
+  border-radius: 4px;
+}

@@ -17,7 +17,12 @@ function formatTime(seconds) {
 }
 
 function normalizeUsageEntries(usage = {}) {
-  return Object.entries(usage)
+  const merged = {};
+  for (const [name, val] of Object.entries(usage)) {
+    const cleanName = name.replace(/^www\./, '');
+    merged[cleanName] = (merged[cleanName] || 0) + val;
+  }
+  return Object.entries(merged)
     .map(([name, value]) => ({
       name,
       value: Math.floor(value / 1000)
@@ -127,6 +132,20 @@ function getStartOfWeek(date) {
   const day = d.getDay(); // 0 (Sun) to 6 (Sat)
   d.setDate(d.getDate() - day);
   return d;
+}
+
+function getUsageForDay(dateKey, storageData, todayKey, session) {
+  let usage = storageData[dateKey] || {};
+  if (dateKey === todayKey && session) {
+    usage = buildUsageWithSession(usage, session, Date.now());
+  }
+  return usage;
+}
+
+function sumUsage(usage) {
+  let sum = 0;
+  for (const v of Object.values(usage)) sum += v;
+  return sum;
 }
 
 function updateDateDisplay() {
@@ -259,6 +278,127 @@ async function loadAndRender() {
     element: document.getElementById("chart"),
     data: selectedDayUsageEntries
   });
+
+  // 1. Daily Insights
+  const todayTotalSecs = weekTotals.find(d => d.key === getDayKey(currentDate))?.totalSecs || 0;
+  
+  const yesterday = new Date(currentDate);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayKey = getDayKey(yesterday);
+  const yesterdayUsage = getUsageForDay(yesterdayKey, storageData, todayKey, session);
+  const yesterdayTotalSecs = Math.floor(sumUsage(yesterdayUsage) / 1000);
+  
+  document.getElementById("insightTotalTime").textContent = formatTime(todayTotalSecs);
+  
+  if (selectedDayUsageEntries.length > 0) {
+    const topSite = selectedDayUsageEntries[0];
+    const topPercent = Math.round((topSite.value / (todayTotalSecs || 1)) * 100);
+    document.getElementById("insightTopSite").textContent = topSite.name;
+    document.getElementById("insightTopPercent").textContent = `${topPercent}% of total`;
+  } else {
+    document.getElementById("insightTopSite").textContent = "None";
+    document.getElementById("insightTopPercent").textContent = "0% of total";
+  }
+  
+  const insightTrendEl = document.getElementById("insightTrend");
+  if (yesterdayTotalSecs === 0 && todayTotalSecs === 0) {
+    insightTrendEl.innerHTML = `<span class="text-stone-400">--</span>`;
+  } else {
+    const diff = todayTotalSecs - yesterdayTotalSecs;
+    const diffPercent = yesterdayTotalSecs > 0 ? Math.abs(Math.round((diff / yesterdayTotalSecs) * 100)) : 100;
+    
+    if (diff > 0) {
+      insightTrendEl.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-2.5 h-2.5 text-red-500"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" /></svg><span class="text-red-500">+${diffPercent}%</span>`;
+    } else if (diff < 0) {
+      insightTrendEl.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-2.5 h-2.5 text-emerald-500"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 4.5l-15 15m0 0h11.25m-11.25 0V8.25" /></svg><span class="text-emerald-500">-${diffPercent}%</span>`;
+    } else {
+      insightTrendEl.innerHTML = `<span class="text-stone-400">0%</span>`;
+    }
+  }
+
+  // 2. Weekly Comparison
+  const thisWeekTotalSecs = weekTotals.reduce((sum, d) => sum + d.totalSecs, 0);
+  
+  let lastWeekTotalSecs = 0;
+  const lastWeekStart = new Date(startOfWeek);
+  lastWeekStart.setDate(lastWeekStart.getDate() - 7);
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(lastWeekStart);
+    d.setDate(d.getDate() + i);
+    const u = getUsageForDay(getDayKey(d), storageData, todayKey, session);
+    lastWeekTotalSecs += Math.floor(sumUsage(u) / 1000);
+  }
+  
+  document.getElementById("compThisWeek").textContent = formatTime(thisWeekTotalSecs);
+  document.getElementById("compLastWeek").textContent = formatTime(lastWeekTotalSecs);
+  
+  const compTrendBadge = document.getElementById("compTrendBadge");
+  if (lastWeekTotalSecs === 0 && thisWeekTotalSecs === 0) {
+    compTrendBadge.innerHTML = `--`;
+    compTrendBadge.className = "flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-bold text-stone-400 bg-stone-100";
+  } else {
+    const diffW = thisWeekTotalSecs - lastWeekTotalSecs;
+    const diffPercentW = lastWeekTotalSecs > 0 ? Math.abs(Math.round((diffW / lastWeekTotalSecs) * 100)) : 100;
+    
+    if (diffW > 0) {
+      compTrendBadge.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" /></svg>+${diffPercentW}%`;
+      compTrendBadge.className = "flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-bold text-red-600 bg-red-100/80";
+    } else if (diffW < 0) {
+      compTrendBadge.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 4.5l-15 15m0 0h11.25m-11.25 0V8.25" /></svg>-${diffPercentW}%`;
+      compTrendBadge.className = "flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-bold text-emerald-600 bg-emerald-100/80";
+    } else {
+      compTrendBadge.innerHTML = `0%`;
+      compTrendBadge.className = "flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-bold text-stone-500 bg-stone-200/60";
+    }
+  }
+
+  // 3. Last 30 Days
+  let thirtyDayTotalMs = 0;
+  const thirtyDayAgg = {}; // domain -> ms
+  
+  for (let i = 0; i < 30; i++) {
+    const d = new Date(currentDate);
+    d.setDate(d.getDate() - i);
+    const u = getUsageForDay(getDayKey(d), storageData, todayKey, session);
+    
+    for (const [domain, ms] of Object.entries(u)) {
+      if (ms > 0) {
+        const cleanDomain = domain.replace(/^www\./, '');
+        thirtyDayTotalMs += ms;
+        thirtyDayAgg[cleanDomain] = (thirtyDayAgg[cleanDomain] || 0) + ms;
+      }
+    }
+  }
+  
+  const thirtyDayAvgSecs = Math.floor((thirtyDayTotalMs / 1000) / 30);
+  document.getElementById("thirtyDayAvg").textContent = formatTime(thirtyDayAvgSecs);
+  
+  const top30 = Object.entries(thirtyDayAgg)
+    .map(([name, ms]) => ({ name, value: Math.floor(ms / 1000) }))
+    .sort((a, b) => b.value - a.value)
+    .slice(0, 3);
+    
+  const listEl = document.getElementById("thirtyDayTopList");
+  listEl.innerHTML = "";
+  
+  if (top30.length === 0) {
+    listEl.innerHTML = `<div class="text-[10px] font-bold text-stone-400 text-center py-2">No data recorded</div>`;
+  } else {
+    top30.forEach((site, index) => {
+      const el = document.createElement("div");
+      el.className = "flex items-center justify-between p-2.5 bg-stone-50 border border-stone-100 rounded-xl hover:bg-yellow-50 hover:border-yellow-200 transition";
+      el.innerHTML = `
+        <div class="flex items-center gap-2 overflow-hidden">
+          <div class="flex items-center justify-center w-5 h-5 rounded-full bg-stone-200 text-stone-500 text-[9px] font-extrabold flex-shrink-0">
+            ${index + 1}
+          </div>
+          <span class="text-xs font-bold text-stone-700 truncate">${site.name}</span>
+        </div>
+        <div class="text-[11px] font-extrabold text-stone-900 flex-shrink-0">${formatTime(site.value)}</div>
+      `;
+      listEl.appendChild(el);
+    });
+  }
 }
 
 function renderWeeklyChart(weekTotals, maxTime) {
