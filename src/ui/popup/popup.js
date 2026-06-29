@@ -250,6 +250,13 @@ if (openSettingsBtn) {
   });
 }
 
+const openAnalyticsBtn = document.getElementById("openAnalytics");
+if (openAnalyticsBtn) {
+  openAnalyticsBtn.addEventListener("click", () => {
+    window.location.href = "../analytics/analytics.html";
+  });
+}
+
 
 // BLOCK INPUT COMPONENT
 

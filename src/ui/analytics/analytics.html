@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Detox Analytics</title>
+  <script src="../tailwind42.js"></script>
+  <link rel="stylesheet" href="../popup/popup.css" />
+  <link rel="stylesheet" href="analytics.css" />
+  <link rel="icon" href="../../icons/icon.png" type="image/png" />
+</head>
+
+<body class="m-0 p-3 w-[320px] font-sans bg-[#fefdf6] text-stone-800 selection:bg-yellow-200 select-none">
+
+  <!-- Header -->
+  <div class="relative flex items-center justify-between mb-3.5">
+    <a href="../popup/popup.html"
+      class="p-2 bg-white/80 border border-stone-200/60 rounded-xl hover:bg-yellow-100 hover:text-yellow-700 hover:border-yellow-300 transition duration-200 shadow-sm text-stone-600 focus:outline-none z-10"
+      title="Go Back">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"
+        class="w-4 h-4">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+      </svg>
+    </a>
+
+    <span class="absolute inset-x-0 text-center text-md font-extrabold text-stone-900 tracking-tight">Analytics</span>
+
+    <a href="../settings/settings.html"
+      class="p-2 bg-white/80 border border-stone-200/60 rounded-xl hover:bg-yellow-100 hover:text-yellow-700 hover:border-yellow-300 transition duration-200 shadow-sm text-stone-600 focus:outline-none z-10"
+      title="Settings">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+        class="w-4.5 h-4.5">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87q.11.06.22.127c.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a8 8 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a7 7 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a7 7 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a7 7 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124q.108-.066.22-.128c.332-.183.582-.495.644-.869z" />
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+      </svg>
+    </a>
+  </div>
+
+  <div class="h-px bg-stone-200/50 my-3"></div>
+
+  <!-- Date Navigator -->
+  <div class="flex items-center justify-between bg-white border border-stone-200/60 rounded-2xl p-2 shadow-sm mb-3.5">
+    <div class="flex items-center gap-1">
+      <button id="prevWeek" class="p-1.5 rounded-lg text-stone-500 hover:bg-stone-100 hover:text-stone-700 transition" title="Previous Week">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m18.75 4.5-7.5 7.5 7.5 7.5m-6-15L5.25 12l7.5 7.5" />
+        </svg>
+      </button>
+      <button id="prevDay" class="p-1.5 rounded-lg text-stone-500 hover:bg-stone-100 hover:text-stone-700 transition" title="Previous Day">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+        </svg>
+      </button>
+    </div>
+    
+    <div id="currentDateDisplay" class="text-sm font-bold text-stone-700 tracking-tight cursor-pointer hover:text-yellow-600 transition" title="Reset to Today">
+      --
+    </div>
+    
+    <div class="flex items-center gap-1">
+      <button id="nextDay" class="p-1.5 rounded-lg text-stone-500 hover:bg-stone-100 hover:text-stone-700 transition" title="Next Day">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+        </svg>
+      </button>
+      <button id="nextWeek" class="p-1.5 rounded-lg text-stone-500 hover:bg-stone-100 hover:text-stone-700 transition" title="Next Week">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Weekly Screen Time Chart -->
+  <div class="bg-white border border-stone-200/60 rounded-2xl p-3 shadow-sm mb-3.5">
+    <div class="text-[10px] font-bold uppercase tracking-wider text-stone-500 mb-3">Weekly Summary</div>
+    <div class="flex h-28 gap-2">
+      <!-- Y Axis -->
+      <div class="flex flex-col justify-between text-[9px] font-bold text-stone-400 pb-5" id="yAxisLabels">
+        <span id="yAxisMax">2h</span>
+        <span id="yAxisMid">1h</span>
+        <span>0h</span>
+      </div>
+      <!-- Chart Area -->
+      <div class="flex-1 flex flex-col relative">
+        <!-- Guidelines -->
+        <div class="absolute top-1 bottom-5 left-0 right-0 flex flex-col justify-between pointer-events-none z-0">
+          <div class="w-full h-[1px] bg-stone-100"></div>
+          <div class="w-full h-[1px] bg-stone-100"></div>
+          <div class="w-full h-[1px] bg-stone-200"></div>
+        </div>
+        <!-- Bars -->
+        <div class="flex items-end justify-between flex-1 gap-1.5 px-1 z-10" id="weeklyChartContainer">
+          <!-- Bars will be generated by JS -->
+        </div>
+        <!-- X Axis Labels -->
+        <div class="flex items-center justify-between px-1 h-5 mt-1 text-[10px] font-bold text-stone-400" id="weeklyChartLabels">
+          <span class="w-full text-center">S</span>
+          <span class="w-full text-center">M</span>
+          <span class="w-full text-center">T</span>
+          <span class="w-full text-center">W</span>
+          <span class="w-full text-center">T</span>
+          <span class="w-full text-center">F</span>
+          <span class="w-full text-center">S</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen Time Card -->
+  <div class="bg-white border border-stone-200/60 rounded-2xl p-3 shadow-sm mb-3.5">
+    <div class="flex items-baseline justify-between mb-2.5">
+      <span class="text-[10px] font-bold uppercase tracking-wider text-stone-500" id="dailyCardTitle">Screen Time</span>
+      <div id="totalTime" class="text-xl font-extrabold text-stone-900 tracking-tight">0s</div>
+    </div>
+    <div id="chart" class="stacked-horizontal-bar"></div>
+  </div>
+
+  <script type="module" src="../../vendor/browser-polyfill.min.js"></script>
+  <script type="module" src="analytics.js"></script>
+
+</body>
+
+</html>
