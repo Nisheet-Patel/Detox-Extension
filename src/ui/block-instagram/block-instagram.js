@@ -51,10 +51,6 @@ toggleReels.addEventListener('change', async (e) => {
     reloadDomain('instagram.com');
 });
 
-toggleFeed.addEventListener('change', (e) => {
-    console.log('Hide Feed:', e.target.checked);
-});
-
 
 // Hide Explore Tab
 toggleExplore.addEventListener('change', async (e) => {
