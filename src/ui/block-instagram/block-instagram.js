@@ -5,7 +5,6 @@ import { StorageService } from "../../storage/storageService.js";
 
 // Toggle Elements
 const toggleReels = document.getElementById('toggleReels');
-const toggleFeed = document.getElementById('toggleFeed');
 const toggleExplore = document.getElementById('toggleExplore');
 const toggleStories = document.getElementById('toggleStories');
 
@@ -14,6 +13,7 @@ const toggleStories = document.getElementById('toggleStories');
 
     toggleReels.checked = filters.hideInstagramReels;
     toggleExplore.checked = filters.hideInstagramExplore;
+    toggleStories.checked = filters.hideInstagramStories;
     console.log(filters);  
 })();
 
@@ -70,6 +70,17 @@ toggleExplore.addEventListener('change', async (e) => {
     console.log('Hide Explore:', e.target.checked);
 });
 
-toggleStories.addEventListener('change', (e) => {
+// Hide Stories
+toggleStories.addEventListener('change', async (e) => {
+    const value = e.target.checked;
+
+    const response = await browser.runtime.sendMessage({
+        type: 'INSTAGRAM_TOGGLE_STORIES',
+        payload: value
+    });
+
+    reloadDomain('instagram.com');
+
     console.log('Hide Stories:', e.target.checked);
 });
+

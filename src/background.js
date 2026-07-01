@@ -193,6 +193,22 @@ browser.runtime.onMessage.addListener(async (message, sender) => {
     return { success: true };
   }
 
+  if (message.type === 'INSTAGRAM_TOGGLE_STORIES') {
+    await StorageService.updateContentFilters({ 
+      hideInstagramStories: message.payload 
+    });
+
+    return { success: true };
+  }
+
+  if (message.type === 'INSTAGRAM_TOGGLE_FEED') {
+    await StorageService.updateContentFilters({ 
+      hideInstagramFeed: message.payload 
+    });
+
+    return { success: true };
+  }
+
   if (message.type === 'YOUTUBE_TOGGLE_SHORTS') {
     await StorageService.updateContentFilters({
       hideYouTubeShorts: message.payload

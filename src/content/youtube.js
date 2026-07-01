@@ -61,6 +61,7 @@ function applyYouTubeFilters(state) {
       [
         'ytd-mini-guide-entry-renderer:has(a[href^="/shorts"]),',
         'ytd-guide-entry-renderer:has(a[title="Shorts" i]),',
+        'grid-shelf-view-model:has(a[href*="/shorts/"]),',
         "ytd-rich-shelf-renderer[is-shorts] {",
         "  display: none !important;",
         "}"

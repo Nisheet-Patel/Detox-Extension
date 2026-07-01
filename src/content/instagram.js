@@ -1,6 +1,7 @@
 var extensionState = {
   hideReels: false,
-  hideExplore: false
+  hideExplore: false,
+  hideStories: false
 };
 
 var extensionApi = (typeof browser !== "undefined" && typeof browser.runtime !== "undefined")
@@ -39,6 +40,17 @@ function applyInstagramFilters(state) {
     activeCSSRules.push(
       [
         'div:has(> a[href^="/explore/"]) {',
+        "  display: none !important;",
+        "}"
+      ].join("\n")
+    );
+  }
+
+  if (state.hideStories) {
+    activeCSSRules.push(
+      [
+        'div[data-pagelet="story_tray"],',
+        '[data-pagelet="story_tray"] {',
         "  display: none !important;",
         "}"
       ].join("\n")
@@ -129,6 +141,7 @@ window.addEventListener("popstate", function () {
 
   extensionState.hideReels = Boolean(filters.hideInstagramReels);
   extensionState.hideExplore = Boolean(filters.hideInstagramExplore);
+  extensionState.hideStories = Boolean(filters.hideInstagramStories);
 
   applyState();
 })();

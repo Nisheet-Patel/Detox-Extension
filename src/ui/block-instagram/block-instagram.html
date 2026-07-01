@@ -44,7 +44,7 @@
             </svg>
         </a>
 
-        <span class="absolute inset-x-0 text-center text-md font-extrabold text-stone-900 tracking-tight">Instagram Blocker</span>
+        <span class="absolute inset-x-0 text-center text-lg font-extrabold text-stone-900 tracking-tight">Instagram Blocker</span>
 
         <a href="../settings/settings.html" class="p-2 bg-white/80 border border-stone-200/60 rounded-xl hover:bg-yellow-100 hover:text-yellow-700 hover:border-yellow-300 transition duration-200 shadow-sm text-stone-600 focus:outline-none z-10"
             title="Settings">
@@ -63,8 +63,11 @@
     <div class="bg-white border border-stone-200/60 rounded-2xl p-4 space-y-4 shadow-sm">
 
         <!-- Hide Reels -->
-        <label class="flex items-center justify-between cursor-pointer group">
-            <span class="text-xs font-bold text-stone-700 group-hover:text-stone-900 transition-colors">Hide Reels</span>
+        <label class="flex items-center justify-between p-3 bg-stone-50 border border-stone-100 rounded-xl cursor-pointer hover:bg-yellow-50 hover:border-yellow-200 transition group">
+            <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-stone-400 group-hover:text-yellow-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span class="text-xs font-bold text-stone-700 group-hover:text-stone-900 transition-colors">Hide Reels</span>
+            </div>
             <div class="relative inline-block w-10">
                 <input type="checkbox" id="toggleReels"
                     class="toggle-checkbox absolute w-5 h-5 rounded-full bg-white border-4 border-stone-300 appearance-none cursor-pointer" />
@@ -72,19 +75,12 @@
             </div>
         </label>
 
-        <!-- Hide Feed -->
-        <label class="flex items-center justify-between cursor-pointer group">
-            <span class="text-xs font-bold text-stone-700 group-hover:text-stone-900 transition-colors">Hide Feed</span>
-            <div class="relative inline-block w-10">
-                <input type="checkbox" id="toggleFeed"
-                    class="toggle-checkbox absolute w-5 h-5 rounded-full bg-white border-4 border-stone-300 appearance-none cursor-pointer" />
-                <label for="toggleFeed" class="toggle-label block h-5 rounded-full bg-stone-200 cursor-pointer"></label>
-            </div>
-        </label>
-
         <!-- Hide Explore -->
-        <label class="flex items-center justify-between cursor-pointer group">
-            <span class="text-xs font-bold text-stone-700 group-hover:text-stone-900 transition-colors">Hide Explore</span>
+        <label class="flex items-center justify-between p-3 bg-stone-50 border border-stone-100 rounded-xl cursor-pointer hover:bg-yellow-50 hover:border-yellow-200 transition group">
+            <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-stone-400 group-hover:text-yellow-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path></svg>
+                <span class="text-xs font-bold text-stone-700 group-hover:text-stone-900 transition-colors">Hide Explore</span>
+            </div>
             <div class="relative inline-block w-10">
                 <input type="checkbox" id="toggleExplore"
                     class="toggle-checkbox absolute w-5 h-5 rounded-full bg-white border-4 border-stone-300 appearance-none cursor-pointer" />
@@ -94,8 +90,11 @@
         </label>
 
         <!-- Hide Stories -->
-        <label class="flex items-center justify-between cursor-pointer group">
-            <span class="text-xs font-bold text-stone-700 group-hover:text-stone-900 transition-colors">Hide Stories</span>
+        <label class="flex items-center justify-between p-3 bg-stone-50 border border-stone-100 rounded-xl cursor-pointer hover:bg-yellow-50 hover:border-yellow-200 transition group">
+            <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-stone-400 group-hover:text-yellow-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span class="text-xs font-bold text-stone-700 group-hover:text-stone-900 transition-colors">Hide Stories</span>
+            </div>
             <div class="relative inline-block w-10">
                 <input type="checkbox" id="toggleStories"
                     class="toggle-checkbox absolute w-5 h-5 rounded-full bg-white border-4 border-stone-300 appearance-none cursor-pointer" />
