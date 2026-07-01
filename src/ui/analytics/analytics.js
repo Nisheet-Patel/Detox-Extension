@@ -81,6 +81,14 @@ function createStackedBar({ element, data = [] }) {
     const row = document.createElement("div");
     row.className = "row";
     
+    if (!item.isOthers || item.name !== "Others") {
+      row.style.cursor = "pointer";
+      row.addEventListener("click", () => {
+        const pathPrefix = window.location.pathname.includes('popup.html') ? '../analytics/' : '';
+        window.location.href = `${pathPrefix}website.html?domain=${encodeURIComponent(item.name)}`;
+      });
+    }
+    
     const left = document.createElement("div");
     left.className = "left";
     
@@ -278,43 +286,6 @@ async function loadAndRender() {
     element: document.getElementById("chart"),
     data: selectedDayUsageEntries
   });
-
-  // 1. Daily Insights
-  const todayTotalSecs = weekTotals.find(d => d.key === getDayKey(currentDate))?.totalSecs || 0;
-  
-  const yesterday = new Date(currentDate);
-  yesterday.setDate(yesterday.getDate() - 1);
-  const yesterdayKey = getDayKey(yesterday);
-  const yesterdayUsage = getUsageForDay(yesterdayKey, storageData, todayKey, session);
-  const yesterdayTotalSecs = Math.floor(sumUsage(yesterdayUsage) / 1000);
-  
-  document.getElementById("insightTotalTime").textContent = formatTime(todayTotalSecs);
-  
-  if (selectedDayUsageEntries.length > 0) {
-    const topSite = selectedDayUsageEntries[0];
-    const topPercent = Math.round((topSite.value / (todayTotalSecs || 1)) * 100);
-    document.getElementById("insightTopSite").textContent = topSite.name;
-    document.getElementById("insightTopPercent").textContent = `${topPercent}% of total`;
-  } else {
-    document.getElementById("insightTopSite").textContent = "None";
-    document.getElementById("insightTopPercent").textContent = "0% of total";
-  }
-  
-  const insightTrendEl = document.getElementById("insightTrend");
-  if (yesterdayTotalSecs === 0 && todayTotalSecs === 0) {
-    insightTrendEl.innerHTML = `<span class="text-stone-400">--</span>`;
-  } else {
-    const diff = todayTotalSecs - yesterdayTotalSecs;
-    const diffPercent = yesterdayTotalSecs > 0 ? Math.abs(Math.round((diff / yesterdayTotalSecs) * 100)) : 100;
-    
-    if (diff > 0) {
-      insightTrendEl.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-2.5 h-2.5 text-red-500"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" /></svg><span class="text-red-500">+${diffPercent}%</span>`;
-    } else if (diff < 0) {
-      insightTrendEl.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-2.5 h-2.5 text-emerald-500"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 4.5l-15 15m0 0h11.25m-11.25 0V8.25" /></svg><span class="text-emerald-500">-${diffPercent}%</span>`;
-    } else {
-      insightTrendEl.innerHTML = `<span class="text-stone-400">0%</span>`;
-    }
-  }
 
   // 2. Weekly Comparison
   const thisWeekTotalSecs = weekTotals.reduce((sum, d) => sum + d.totalSecs, 0);

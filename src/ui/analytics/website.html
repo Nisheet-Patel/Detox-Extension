@@ -3,28 +3,27 @@
 
 <head>
   <meta charset="UTF-8" />
-  <title>Detox Analytics</title>
+  <title>Website Analytics</title>
   <script src="../tailwind42.js"></script>
-  <link rel="stylesheet" href="../popup/popup.css" />
   <link rel="stylesheet" href="analytics.css" />
   <link rel="icon" href="../../icons/icon.png" type="image/png" />
 </head>
 
-<body class="m-0 p-3 w-[320px] font-sans bg-[#fefdf6] text-stone-800 selection:bg-yellow-200 select-none">
+<body
+  class="m-0 p-3 w-[320px] font-sans bg-[#fefdf6] text-stone-800 selection:bg-yellow-200 select-none overflow-x-hidden min-h-[500px]">
 
   <!-- Header -->
   <div class="relative flex items-center justify-between mb-3.5">
-    <a href="../popup/popup.html"
+    <button id="backBtn"
       class="p-2 bg-white/80 border border-stone-200/60 rounded-xl hover:bg-yellow-100 hover:text-yellow-700 hover:border-yellow-300 transition duration-200 shadow-sm text-stone-600 focus:outline-none z-10"
       title="Go Back">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"
         class="w-4 h-4">
         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
       </svg>
-    </a>
-
-    <span class="absolute inset-x-0 text-center text-lg font-extrabold text-stone-900 tracking-tight">Analytics</span>
-
+    </button>
+    <span class="absolute inset-x-0 text-center text-lg font-extrabold text-stone-900 tracking-tight"
+      id="headerTitle">Analytics</span>
     <a href="../settings/settings.html"
       class="p-2 bg-white/80 border border-stone-200/60 rounded-xl hover:bg-yellow-100 hover:text-yellow-700 hover:border-yellow-300 transition duration-200 shadow-sm text-stone-600 focus:outline-none z-10"
       title="Settings">
@@ -82,7 +81,16 @@
     </div>
   </div>
 
-  <!-- Weekly Screen Time Chart -->
+  <!-- Website Card -->
+  <div class="bg-white border border-stone-200/60 rounded-2xl p-3 shadow-sm mb-3.5 flex items-center justify-between">
+    <div class="flex items-center gap-2 overflow-hidden">
+      <img id="siteFavicon" src="" class="w-6 h-6 rounded" alt="" />
+      <span class="text-sm font-extrabold text-stone-900 truncate" id="siteDomain">--</span>
+    </div>
+    <div class="text-lg font-extrabold text-stone-900 flex-shrink-0" id="siteTotalTime">0s</div>
+  </div>
+
+  <!-- Weekly Summary Chart -->
   <div class="bg-white border border-stone-200/60 rounded-2xl p-3 shadow-sm mb-3.5">
     <div class="text-xs font-bold uppercase tracking-wider text-stone-500 mb-3">Weekly Summary</div>
     <div class="flex h-28 gap-2">
@@ -119,15 +127,25 @@
     </div>
   </div>
 
-  <!-- Screen Time Card -->
+  <!-- Daily Summary -->
   <div class="bg-white border border-stone-200/60 rounded-2xl p-3 shadow-sm mb-3.5">
-    <div class="flex items-baseline justify-between mb-2.5">
-      <span class="text-xs font-bold uppercase tracking-wider text-stone-500" id="dailyCardTitle">Screen Time</span>
-      <div id="totalTime" class="text-xl font-extrabold text-stone-900 tracking-tight">0s</div>
+    <div class="text-xs font-bold uppercase tracking-wider text-stone-500 mb-3">Daily Summary</div>
+    <div class="grid grid-cols-2 gap-2">
+      <!-- Total time & Percent -->
+      <div class="p-2.5 bg-stone-50 border border-stone-100 rounded-xl flex flex-col gap-1 relative overflow-hidden">
+        <div class="text-[10px] font-bold text-stone-500">Percentage of Total</div>
+        <div class="text-lg font-extrabold text-stone-900 tracking-tight" id="dailyPercent">0%</div>
+        <div class="text-[9px] font-bold text-stone-400" id="dailyTotalTime">0s today</div>
+      </div>
+      <!-- Trend -->
+      <div class="p-2.5 bg-stone-50 border border-stone-100 rounded-xl flex flex-col justify-center items-center gap-1">
+        <div class="text-[10px] font-bold text-stone-500">Vs Yesterday</div>
+        <div class="flex items-center gap-1 text-sm font-extrabold" id="dailyTrend">
+          --
+        </div>
+      </div>
     </div>
-    <div id="chart" class="stacked-horizontal-bar"></div>
   </div>
-
 
   <!-- Weekly Comparison -->
   <div class="bg-white border border-stone-200/60 rounded-2xl p-3 shadow-sm mb-3.5">
@@ -150,23 +168,28 @@
     </div>
   </div>
 
-  <!-- Last 30 Days -->
-  <div class="bg-white border border-stone-200/60 rounded-2xl p-3 shadow-sm mb-3.5">
-    <div class="flex items-center justify-between mb-3">
-      <span class="text-xs font-bold uppercase tracking-wider text-stone-500">Last 30 Days</span>
-      <div class="text-[10px] font-bold text-stone-400">
-        Avg: <span class="text-stone-700" id="thirtyDayAvg">0s</span> / day
-      </div>
+  <!-- Rankings & Averages -->
+  <div class="grid grid-cols-1 gap-3 mb-3.5">
+    <div class="bg-white border border-stone-200/60 rounded-2xl p-3 shadow-sm flex items-center justify-between">
+      <span class="text-xs font-bold uppercase tracking-wider text-stone-500">30-Day Average</span>
+      <span class="text-sm font-extrabold text-stone-900" id="thirtyDayAvg">0s / day</span>
     </div>
 
-    <div class="flex flex-col gap-1.5" id="thirtyDayTopList">
-      <!-- Generated by JS -->
+    <!-- Ranking Container (hidden by default) -->
+    <div id="rankingContainer"
+      class="bg-white border border-stone-200/60 rounded-2xl p-3 shadow-sm hidden flex-col gap-2">
+      <div class="text-xs font-bold uppercase tracking-wider text-stone-500 mb-1">Rankings</div>
+      <div
+        class="text-xs font-extrabold text-stone-800 bg-yellow-100/50 px-2 py-1.5 rounded-lg border border-yellow-200/50"
+        id="rankToday"></div>
+      <div
+        class="text-xs font-extrabold text-stone-800 bg-emerald-100/50 px-2 py-1.5 rounded-lg border border-emerald-200/50"
+        id="rankWeek"></div>
     </div>
   </div>
 
   <script type="module" src="../../vendor/browser-polyfill.min.js"></script>
-  <script type="module" src="analytics.js"></script>
-
+  <script type="module" src="website.js"></script>
 </body>
 
 </html>

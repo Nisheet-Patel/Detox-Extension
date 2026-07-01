@@ -22,7 +22,12 @@ let latestSnapshot = null;
 let liveRefreshTimer = null;
 
 function normalizeUsageEntries(usage = {}) {
-  return Object.entries(usage)
+  const merged = {};
+  for (const [name, val] of Object.entries(usage)) {
+    const cleanName = name.replace(/^www\./, '');
+    merged[cleanName] = (merged[cleanName] || 0) + val;
+  }
+  return Object.entries(merged)
     .map(([name, value]) => ({
       name,
       value: Math.floor(value / 1000)
@@ -102,6 +107,14 @@ function createStackedBar({ element, data = [] }) {
   processed.forEach((item, index) => {
     const row = document.createElement("div");
     row.className = "row";
+    
+    if (!item.isOthers || item.name !== "Others") {
+      row.style.cursor = "pointer";
+      row.addEventListener("click", () => {
+        const pathPrefix = window.location.pathname.includes('popup.html') ? '../analytics/' : '';
+        window.location.href = `${pathPrefix}website.html?domain=${encodeURIComponent(item.name)}`;
+      });
+    }
 
     const left = document.createElement("div");
     left.className = "left";
