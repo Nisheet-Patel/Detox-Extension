@@ -30,6 +30,7 @@ if (typeof chrome === "undefined" || !chrome.runtime || !chrome.runtime.id) {
 
   window.browser = {
     runtime: {
+      getManifest: () => ({ version: "0.2.3", name: "Detox" }),
       sendMessage: async (msg) => {
         console.log("[Mock Runtime] Message sent:", msg);
         if (msg.type === "TRACKING_GET_SNAPSHOT") {

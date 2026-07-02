@@ -11,6 +11,28 @@ const historyRange = document.getElementById("historyRange");
 const exportBtn = document.getElementById("exportBtn");
 const importFile = document.getElementById("importFile");
 const feedbackMsg = document.getElementById("feedbackMsg");
+const appVersion = document.getElementById("appVersion");
+
+// Helper to dynamically retrieve extension version from runtime manifest
+function getExtensionVersion() {
+  try {
+    if (typeof browser !== "undefined" && browser?.runtime?.getManifest) {
+      const manifest = browser.runtime.getManifest();
+      if (manifest?.version) return manifest.version;
+    }
+    if (typeof chrome !== "undefined" && chrome?.runtime?.getManifest) {
+      const manifest = chrome.runtime.getManifest();
+      if (manifest?.version) return manifest.version;
+    }
+  } catch (err) {
+    console.warn("Failed to get manifest version:", err);
+  }
+  return "0.2.3";
+}
+
+if (appVersion) {
+  appVersion.textContent = getExtensionVersion();
+}
 
 // Helper to display temporary feedback messages
 function showFeedback(message, className) {
@@ -123,7 +145,7 @@ exportBtn.addEventListener("click", async () => {
       meta: {
         version: "1.0",
         exportedAt: new Date().toISOString(),
-        extensionVersion: "1.0.0"
+        extensionVersion: getExtensionVersion()
       },
       config: {},
       history: {}

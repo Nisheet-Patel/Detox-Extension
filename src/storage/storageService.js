@@ -427,9 +427,9 @@ export class StorageService {
     const config = await this.getConfig();
     
     // Get extension version dynamically, fallback if not available
-    const extVersion = typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getManifest 
-      ? chrome.runtime.getManifest().version 
-      : "1.0.0";
+    const extVersion = ((typeof browser !== 'undefined' && browser.runtime && browser.runtime.getManifest) || (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getManifest))
+      ? (browser.runtime.getManifest()?.version || chrome.runtime.getManifest()?.version)
+      : "0.2.3";
 
     const exportData = {
       meta: {

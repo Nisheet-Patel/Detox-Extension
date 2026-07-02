@@ -23,7 +23,8 @@
   </style>
 </head>
 
-<body class="m-0 p-3 w-[320px] font-sans bg-[#fefdf6] min-h-[500px] flex flex-col text-stone-800 selection:bg-yellow-200 select-none">
+<body
+  class="m-0 p-3 w-[320px] font-sans bg-[#fefdf6] min-h-[500px] flex flex-col text-stone-800 selection:bg-yellow-200 select-none">
 
   <!-- Header -->
   <div class="relative flex items-center justify-between mb-3.5">
@@ -52,28 +53,49 @@
       <p class="text-[11px] text-stone-400 mb-3">Your data never leaves your browser.</p>
 
       <!-- Store Locally Toggle -->
-      <label class="flex items-center justify-between p-3 bg-stone-50 border border-stone-100 rounded-xl mb-3 cursor-pointer hover:bg-yellow-50 hover:border-yellow-200 transition group">
+      <label
+        class="flex items-center justify-between p-3 bg-stone-50 border border-stone-100 rounded-xl mb-3 cursor-pointer hover:bg-yellow-50 hover:border-yellow-200 transition group">
         <span class="text-xs font-bold text-stone-600 group-hover:text-yellow-700">Store all data locally</span>
         <input type="checkbox" checked disabled class="accent-yellow-500 h-4 w-4 rounded border-stone-300" />
       </label>
 
       <!-- Clear buttons stack -->
       <div class="space-y-2">
-        <button id="clearStats" class="w-full flex items-center justify-between text-xs font-bold p-3 bg-stone-50 border border-stone-100 rounded-xl hover:bg-yellow-50 hover:border-yellow-300 hover:text-yellow-700 active:scale-95 transition-all duration-150 group">
+        <button id="clearStats"
+          class="w-full flex items-center justify-between text-xs font-bold p-3 bg-stone-50 border border-stone-100 rounded-xl hover:bg-yellow-50 hover:border-yellow-300 hover:text-yellow-700 active:scale-95 transition-all duration-150 group">
           <span>Clear browsing statistics</span>
-          <svg class="w-4 h-4 text-stone-400 group-hover:text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+          <svg class="w-4 h-4 text-stone-400 group-hover:text-yellow-600" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
         </button>
-        <button id="clearChannels" class="w-full flex items-center justify-between text-xs font-bold p-3 bg-stone-50 border border-stone-100 rounded-xl hover:bg-yellow-50 hover:border-yellow-300 hover:text-yellow-700 active:scale-95 transition-all duration-150 group">
+        <button id="clearChannels"
+          class="w-full flex items-center justify-between text-xs font-bold p-3 bg-stone-50 border border-stone-100 rounded-xl hover:bg-yellow-50 hover:border-yellow-300 hover:text-yellow-700 active:scale-95 transition-all duration-150 group">
           <span>Clear blocked channels</span>
-          <svg class="w-4 h-4 text-stone-400 group-hover:text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+          <svg class="w-4 h-4 text-stone-400 group-hover:text-yellow-600" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
         </button>
-        <button id="clearBudgets" class="w-full flex items-center justify-between text-xs font-bold p-3 bg-stone-50 border border-stone-100 rounded-xl hover:bg-yellow-50 hover:border-yellow-300 hover:text-yellow-700 active:scale-95 transition-all duration-150 group">
+        <button id="clearBudgets"
+          class="w-full flex items-center justify-between text-xs font-bold p-3 bg-stone-50 border border-stone-100 rounded-xl hover:bg-yellow-50 hover:border-yellow-300 hover:text-yellow-700 active:scale-95 transition-all duration-150 group">
           <span>Clear site budgets</span>
-          <svg class="w-4 h-4 text-stone-400 group-hover:text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+          <svg class="w-4 h-4 text-stone-400 group-hover:text-yellow-600" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
         </button>
-        <button id="resetAll" class="w-full flex items-center justify-between text-xs font-bold p-3 bg-red-50 border border-red-100 text-red-600 rounded-xl hover:bg-red-100 hover:border-red-300 hover:text-red-700 active:scale-95 transition-all duration-150 group">
+        <button id="resetAll"
+          class="w-full flex items-center justify-between text-xs font-bold p-3 bg-red-50 border border-red-100 text-red-600 rounded-xl hover:bg-red-100 hover:border-red-300 hover:text-red-700 active:scale-95 transition-all duration-150 group">
           <span>Reset all Detox data</span>
-          <svg class="w-4 h-4 text-red-400 group-hover:text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+          <svg class="w-4 h-4 text-red-400 group-hover:text-red-600" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
         </button>
       </div>
     </div>
@@ -85,8 +107,10 @@
 
       <!-- History Choice -->
       <div class="mb-3">
-        <label for="historyRange" class="block text-xs font-bold text-stone-500 uppercase mb-1">Screen Time History</label>
-        <select id="historyRange" class="w-full text-xs font-bold px-3 py-2 border border-stone-200 rounded-xl outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 bg-stone-50 transition">
+        <label for="historyRange" class="block text-xs font-bold text-stone-500 uppercase mb-1">Screen Time
+          History</label>
+        <select id="historyRange"
+          class="w-full text-xs font-bold px-3 py-2 border border-stone-200 rounded-xl outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 bg-stone-50 transition">
           <option value="30">Last 30 days</option>
           <option value="60">Last 60 days</option>
           <option value="all" selected>All time</option>
@@ -95,13 +119,21 @@
 
       <!-- Action Buttons -->
       <div class="flex gap-2">
-        <button id="exportBtn" class="flex flex-1 items-center justify-center gap-1.5 text-center text-xs font-bold py-2.5 bg-yellow-400 text-stone-900 border border-yellow-500/20 rounded-xl hover:bg-yellow-500 active:scale-95 transition-all duration-150 shadow-sm">
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+        <button id="exportBtn"
+          class="flex flex-1 items-center justify-center gap-1.5 text-center text-xs font-bold py-2.5 bg-yellow-400 text-stone-900 border border-yellow-500/20 rounded-xl hover:bg-yellow-500 active:scale-95 transition-all duration-150 shadow-sm">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+          </svg>
           Export
         </button>
 
-        <label class="flex flex-1 items-center justify-center gap-1.5 text-center text-xs font-bold py-2.5 bg-stone-50 text-stone-700 border border-stone-200 rounded-xl hover:bg-stone-100 hover:text-stone-900 active:scale-95 transition-all duration-150 shadow-sm cursor-pointer">
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+        <label
+          class="flex flex-1 items-center justify-center gap-1.5 text-center text-xs font-bold py-2.5 bg-stone-50 text-stone-700 border border-stone-200 rounded-xl hover:bg-stone-100 hover:text-stone-900 active:scale-95 transition-all duration-150 shadow-sm cursor-pointer">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
           Import
           <input type="file" id="importFile" accept=".json" class="hidden" />
         </label>
@@ -114,27 +146,46 @@
     <!-- About Section -->
     <div class="bg-white border border-stone-200/60 rounded-2xl p-3.5 shadow-sm">
       <h3 class="text-xs font-bold text-stone-500 uppercase tracking-wider mb-2">About</h3>
-      
+
       <div class="flex items-center justify-between mb-3">
-        <span class="font-extrabold text-stone-800 text-xs">Detox v1.0.0</span>
-        <span class="text-[10px] px-2 py-1 bg-yellow-100 text-yellow-700 font-bold rounded-lg border border-yellow-200">Free & Open Source</span>
+        <span class="font-extrabold text-stone-800 text-xs">Detox v<span id="appVersion">0.2.3</span></span>
+        <span
+          class="text-[10px] px-2 py-1 bg-yellow-100 text-yellow-700 font-bold rounded-lg border border-yellow-200">Free
+          & Open Source</span>
       </div>
 
       <div class="grid grid-cols-2 gap-2 text-stone-500">
-        <a href="https://github.com/Nisheet-Patel/Detox-Extension" target="_blank" class="flex flex-col items-center justify-center gap-1.5 p-3 bg-stone-50 border border-stone-100 rounded-xl hover:bg-yellow-50 hover:text-stone-900 hover:border-yellow-200 transition">
-          <svg class="w-5 h-5 text-stone-400" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.418 22 12c0-5.523-4.477-10-10-10z"></path></svg>
+        <a href="https://github.com/Nisheet-Patel/Detox-Extension" target="_blank"
+          class="flex flex-col items-center justify-center gap-1.5 p-3 bg-stone-50 border border-stone-100 rounded-xl hover:bg-yellow-50 hover:text-stone-900 hover:border-yellow-200 transition">
+          <svg class="w-5 h-5 text-stone-400" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.418 22 12c0-5.523-4.477-10-10-10z">
+            </path>
+          </svg>
           <span class="text-[11px] font-bold">GitHub</span>
         </a>
-        <a href="https://detoxextension.vercel.app/privacy" target="_blank" class="flex flex-col items-center justify-center gap-1.5 p-3 bg-stone-50 border border-stone-100 rounded-xl hover:bg-yellow-50 hover:text-stone-900 hover:border-yellow-200 transition">
-          <svg class="w-5 h-5 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+        <a href="https://detoxextension.vercel.app/privacy" target="_blank"
+          class="flex flex-col items-center justify-center gap-1.5 p-3 bg-stone-50 border border-stone-100 rounded-xl hover:bg-yellow-50 hover:text-stone-900 hover:border-yellow-200 transition">
+          <svg class="w-5 h-5 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
           <span class="text-[11px] font-bold">Privacy</span>
         </a>
-        <a href="https://github.com/Nisheet-Patel/Detox-Extension/issues" target="_blank" class="flex flex-col items-center justify-center gap-1.5 p-3 bg-stone-50 border border-stone-100 rounded-xl hover:bg-yellow-50 hover:text-stone-900 hover:border-yellow-200 transition">
-          <svg class="w-5 h-5 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" /></svg>
+        <a href="https://github.com/Nisheet-Patel/Detox-Extension/issues" target="_blank"
+          class="flex flex-col items-center justify-center gap-1.5 p-3 bg-stone-50 border border-stone-100 rounded-xl hover:bg-yellow-50 hover:text-stone-900 hover:border-yellow-200 transition">
+          <svg class="w-5 h-5 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+          </svg>
           <span class="text-[11px] font-bold">Report Bug</span>
         </a>
-        <a href="https://github.com/Nisheet-Patel/Detox-Extension/issues" target="_blank" class="flex flex-col items-center justify-center gap-1.5 p-3 bg-stone-50 border border-stone-100 rounded-xl hover:bg-yellow-50 hover:text-stone-900 hover:border-yellow-200 transition">
-          <svg class="w-5 h-5 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+        <a href="https://github.com/Nisheet-Patel/Detox-Extension/issues" target="_blank"
+          class="flex flex-col items-center justify-center gap-1.5 p-3 bg-stone-50 border border-stone-100 rounded-xl hover:bg-yellow-50 hover:text-stone-900 hover:border-yellow-200 transition">
+          <svg class="w-5 h-5 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+          </svg>
           <span class="text-[11px] font-bold">Feature</span>
         </a>
       </div>

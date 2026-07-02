@@ -1,20 +1,28 @@
 {
   "name": "detox-extension",
   "version": "0.2.3",
-  "description": "Filter distractions, not the web. Block channels, hide Shorts/Reels, track screen time, and control your browsing with daily site budgets - all local and open source.",
+  "description": "Detox is a privacy-first browser extension for digital wellbeing, screen time tracking, website blocking, YouTube channel blocking, hiding Shorts & Reels, and daily site budgets.",
   "author": "Nisheet Patel",
   "license": "Apache-2.0",
   "keywords": [
+    "detox",
     "detox-extension",
+    "website-blocker",
+    "screen-time-tracker",
     "digital-wellbeing",
-    "browser-extension",
-    "chrome-extension",
-    "firefox-addon",
+    "productivity-tool",
+    "distraction-blocker",
     "youtube-blocker",
     "shorts-blocker",
     "reels-blocker",
-    "focus",
-    "privacy-first"
+    "instagram-filter",
+    "site-budget",
+    "focus-mode",
+    "browser-extension",
+    "chrome-extension",
+    "firefox-addon",
+    "privacy-first",
+    "open-source"
   ],
   "scripts": {
     "build": "node build.js"
